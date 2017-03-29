@@ -1,0 +1,4 @@
+com.mycompany.mavenkokeilu.Kokeilutestaus.Kirjautumisikkuna$3
+com.mycompany.mavenkokeilu.Kokeilutestaus.Kirjautumisikkuna
+com.mycompany.mavenkokeilu.Kokeilutestaus.Kirjautumisikkuna$2
+com.mycompany.mavenkokeilu.Kokeilutestaus.Kirjautumisikkuna$1
