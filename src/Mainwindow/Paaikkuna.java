@@ -57,7 +57,7 @@ import javax.swing.JPanel;
         alihankkijat.setBounds(20, 300, 200, 25);
         Asiakas.setBounds(250, 300,100, 25);
        
-        menu = new JMenu ("Menu");  
+        menu = new JMenu ("Menu");   
         //****************************************
         //komponentit******
         
