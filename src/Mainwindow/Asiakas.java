@@ -1,8 +1,12 @@
 
 package Mainwindow;
 
+import Tietokantayhteys.YhteydenOtto;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -14,7 +18,7 @@ import javax.swing.JTextField;
 
 public class Asiakas extends JPanel{
     public JFrame ali = new JFrame("Asiakas");
-    private JLabel jyri = new JLabel("Jyri on perseestä");
+    
     private JLabel nimi = new JLabel("Nimi");
     private JTextField nimiT = new JTextField(20);
     private JLabel sukunimi = new JLabel("Sukunimi");
@@ -27,11 +31,11 @@ public class Asiakas extends JPanel{
     private JTextField postinumeroT = new JTextField(20);
     private JLabel Katuosoite = new JLabel("Katuosoite");
     private JTextField katuosoiteT = new JTextField(20);
-    private JLabel Tilauksennumero = new JLabel("Sähkoposti");
+    private JLabel Sahkoposti = new JLabel("Sähkoposti");
     private JTextField tilauksennumeroT = new JTextField(20);
     private JButton sulje = new JButton("Close");
     private JButton valmis = new JButton("Accept");
-    private JButton jyri2 = new JButton ("k");
+    
     //shhhhhhhhhHhhhhhhh 
     public Asiakas(){
         //**********************tietoikkunan tekeminen
@@ -49,7 +53,7 @@ public class Asiakas extends JPanel{
         ali.add(Postitoimipaikka);
         ali.add(Postinumero);
         ali.add(Katuosoite);
-        ali.add(Tilauksennumero);
+        ali.add(Sahkoposti);
         ali.add(valmis);
         ali.add(sulje);
         //tekstifieldien lisäys
@@ -60,9 +64,7 @@ public class Asiakas extends JPanel{
         ali.add(postinumeroT);
         ali.add(katuosoiteT);
         ali.add(tilauksennumeroT);
-        ali.add(jyri);
-        ali.add(jyri2);
-        jyri.setVisible(false);
+      
         
         
         
@@ -72,20 +74,12 @@ public class Asiakas extends JPanel{
         sukunimi.setBounds(40, 70, 100, 20);
         //sahkoposti.setBounds(40, 100,100,20);
         //sähköposti ja haista paska jyri
-        Tilauksennumero.setBounds(40, 100, 100, 20);
+        Sahkoposti.setBounds(40, 100, 100, 20);
         Katuosoite.setBounds(40, 130, 100, 20);
         Maa.setBounds(40, 160, 100, 20);
         Postitoimipaikka.setBounds(40, 190, 100, 20);
         Postinumero.setBounds(40, 220, 100, 20);
-        jyri.setBounds(40, 300,100,20);
-        jyri2.setBounds(0, 315,10,10);
-        jyri2.setVisible(true);
-        jyri2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jyri.setVisible(true);
-            }
-        });
+        
         
         
         valmis.setBounds(40,250,100,20);
@@ -103,6 +97,12 @@ public class Asiakas extends JPanel{
         valmis.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    lisaaAsiakas();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    
+                }
                 Paaikkuna p = new Paaikkuna();
                 ali.setVisible(false);
                 p.paaikkuna.setVisible(true);
@@ -118,6 +118,40 @@ public class Asiakas extends JPanel{
                
             }
         });
-    }
+
     
+    
+    
+    
+    
+}
+    private void lisaaAsiakas() throws SQLException{
+       Connection yhteys = YhteydenOtto.avaaYhteys();
+       PreparedStatement lisayslause = null;
+       
+       
+       try{
+                                                                                                             //arvo  1,2,3,4,5,6              
+       String SLause = "insert into asiakas(Katuosoite, Maa, Nimi, Postinumero,Postitoimipaikka, Sukunumini) values (?,?,?,?,?,?)";
+       
+       lisayslause = yhteys.prepareStatement(SLause);
+       
+       lisayslause.setString(1, katuosoiteT.getText());
+       lisayslause.setString(2, maaT.getText());
+       lisayslause.setString(3, nimiT.getText());
+       lisayslause.setString(4, postinumeroT.getText());
+       lisayslause.setString(5, postitoimipaikkaT.getText());
+       lisayslause.setString(6, sukunimiT.getText());
+       int rowsAffected = lisayslause.executeUpdate();
+       
+       }catch(Exception ex){
+           System.out.println("asiakas insertti lause on perseestä");
+          ex.printStackTrace();
+       }finally{
+           YhteydenOtto.suljeYhteys(yhteys);
+       }
+       
+       
+        
+    }
 }
