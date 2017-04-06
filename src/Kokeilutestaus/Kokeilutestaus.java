@@ -1,7 +1,7 @@
 package Kokeilutestaus;
 
 import Mainwindow.Paaikkuna;
-import java.awt.Dimension;
+import Mainwindow.Tietovarasto;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -12,7 +12,6 @@ import javax.swing.JTextField;
 import Tietokantayhteys.YhteydenOtto;
 import javax.swing.JOptionPane;
 import Rekisteri.Rekisteriointi;
-import Rekisteri.Security;
 import java.sql.SQLException;
 import javax.swing.JPasswordField;
 
@@ -53,6 +52,7 @@ public class Kokeilutestaus extends JPanel {
         YhteydenOtto k = new YhteydenOtto();
         Rekisteriointi r = new Rekisteriointi();
         Paaikkuna p = new Paaikkuna();
+        
 
        
         //asettelu boundeilla (kokeilu )
@@ -80,13 +80,14 @@ public class Kokeilutestaus extends JPanel {
                 
                 String Nimi = nimiT.getText();
                 String Salasana = salasanaT.getText();
-                Security s = new Security();
+                Tietovarasto t = new Tietovarasto();
 
-                String hashPassword = s.hashPassword(Salasana);
+                
+
+                
 
                 try {
-
-                    if (r.checkUser(Nimi, Salasana)) {
+                    if (t.checkUser(Nimi, Salasana) != -1) {
 
                         System.out.println("toimii");
                        
@@ -97,10 +98,12 @@ public class Kokeilutestaus extends JPanel {
                         JOptionPane.showMessageDialog(null, "Incorrect username or password");
 
                     }
-
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
+                  
+
+               
 
             }
         }
