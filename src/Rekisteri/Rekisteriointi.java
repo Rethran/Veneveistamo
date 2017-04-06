@@ -6,6 +6,7 @@
 package Rekisteri;
 
 import Kokeilutestaus.Kokeilutestaus;
+import Mainwindow.Tietovarasto;
 import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -85,12 +86,12 @@ public class Rekisteriointi extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Kokeilutestaus k = new Kokeilutestaus();
-               
+                Tietovarasto tieto = new Tietovarasto();
                     
                 try {
                     
                    
-                    lisaaHenkiloita();
+                   tieto.lisaaHenkiloita(nimiteksti.getText(), salasanateksti.getText(), sahkopostiteksti.getText());
 
                     System.out.println("olet luonut käyttäjän");
                     
@@ -126,67 +127,39 @@ public class Rekisteriointi extends JPanel {
     }
 
     //TURHAA SQL KAMAA VÄÄRÄSSÄ PAIKASSA
-    public boolean lisaaHenkiloita() throws SQLException {
-        Connection yhteys = YhteydenOtto.avaaYhteys();
-        String salasana = salasanateksti.getText();
-        Security s = new Security();
-        String hashsalasana = s.hashPassword(salasana);
+//    public boolean lisaaHenkiloita() throws SQLException {
+//        Connection yhteys = YhteydenOtto.avaaYhteys();
+//        String salasana = salasanateksti.getText();
+//        Security s = new Security();
+//        String hashsalasana = s.hashPassword(salasana);
+//
+//        if (yhteys == null) {
+//            return false;
+//        }
+//        PreparedStatement lisayslause = null;
+//        
+//        try { 
+//
+//            String lisaaSql
+//                    = 
+//                    "insert into kayttaja(Kayttajatunnus,Salasana,Sahkoposti) values(?,?,?)";
+//            
+//            lisayslause = yhteys.prepareStatement(lisaaSql);
+//
+//            lisayslause.setString(1, nimiteksti.getText());
+//            lisayslause.setString(2, hashsalasana);
+//            lisayslause.setString(3, sahkopostiteksti.getText());
+//            int rowsAffected = lisayslause.executeUpdate();
+//
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        } finally {
+//            YhteydenOtto.suljeYhteys(yhteys);
+//        }
+//
+//    }
 
-        if (yhteys == null) {
-            return false;
-        }
-        PreparedStatement lisayslause = null;
-        
-        try { 
-
-            String lisaaSql
-                    = 
-                    "insert into kayttaja(Kayttajatunnus,Salasana,Sahkoposti) values(?,?,?)";
-            
-            lisayslause = yhteys.prepareStatement(lisaaSql);
-
-            lisayslause.setString(1, nimiteksti.getText());
-            lisayslause.setString(2, hashsalasana);
-            lisayslause.setString(3, sahkopostiteksti.getText());
-            int rowsAffected = lisayslause.executeUpdate();
-
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            YhteydenOtto.suljeYhteys(yhteys);
-        }
-
-    }
-
-    public boolean checkUser(String Kayttajanimi, String Salasana) throws SQLException {
-        Connection yhteys = YhteydenOtto.avaaYhteys();
-        try {
-
-            String sql = "SELECT Kayttajatunnus, Salasana FROM kayttaja WHERE Kayttajatunnus=?";
-
-            ResultSet rs = null;
-            PreparedStatement pstmt = yhteys.prepareStatement(sql);
-            pstmt.setString(1, Kayttajanimi);
-
-            rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                String password = rs.getString("Salasana");
-                return BCrypt.checkpw(Salasana, password);
-
-            } else {
-                return false;
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-        } finally {
-            YhteydenOtto.suljeYhteys(yhteys);
-
-        }
-        return false;
-    }
+    
 }

@@ -105,7 +105,9 @@ import javax.swing.JPanel;
         Asiakas.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                
               Asiakas a = new Asiakas();
+              
               a.ali.setVisible(true);
               paaikkuna.setVisible(false);
             }
