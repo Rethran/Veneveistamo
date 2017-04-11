@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 
   public class Paaikkuna extends JPanel{
    public JFrame paaikkuna;
+   private JButton Tuoteluettelo;
    private final JMenu menu;
    private final JMenuBar menuBar;
    private final JMenuItem logout;
@@ -48,6 +49,7 @@ import javax.swing.JPanel;
         Veneveistamoyritys = new JButton("Veneveistämö yrityksenä");
         alihankkijat = new JButton("Alihankkijat");
         Asiakas = new JButton("Asiakas");
+        Tuoteluettelo = new JButton("Tuoteluettelo");
         
         //**********************************
         //komponenttien tekeminen
@@ -56,11 +58,12 @@ import javax.swing.JPanel;
         Veneveistamoyritys.setBounds(20,200 , 200, 25);
         alihankkijat.setBounds(20, 300, 200, 25);
         Asiakas.setBounds(250, 300,100, 25);
-       
+        Tuoteluettelo.setBounds(10, 30, 200, 25);
+        
         menu = new JMenu ("Menu");   
         //****************************************
         //komponentit******
-        
+        paaikkuna.add(Tuoteluettelo);
         paaikkuna.add(Tilaus);
         paaikkuna.add(Veneveistamoyritys);
         paaikkuna.add(alihankkijat);
@@ -75,6 +78,14 @@ import javax.swing.JPanel;
        
         
         //******************************************nabuloitten toiminnat
+        Tuoteluettelo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+             Tuoteluettelo t = new Tuoteluettelo();
+             paaikkuna.setVisible(false);
+             t.tuotteet.setVisible(true);
+            }
+        });
         Tilaus.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
