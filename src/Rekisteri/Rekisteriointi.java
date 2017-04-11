@@ -17,13 +17,9 @@ import Tietokantayhteys.YhteydenOtto;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
-import jbcrypt.BCrypt;
 
 public class Rekisteriointi extends JPanel {
 
@@ -126,40 +122,7 @@ public class Rekisteriointi extends JPanel {
         }
     }
 
-    //TURHAA SQL KAMAA VÄÄRÄSSÄ PAIKASSA
-//    public boolean lisaaHenkiloita() throws SQLException {
-//        Connection yhteys = YhteydenOtto.avaaYhteys();
-//        String salasana = salasanateksti.getText();
-//        Security s = new Security();
-//        String hashsalasana = s.hashPassword(salasana);
-//
-//        if (yhteys == null) {
-//            return false;
-//        }
-//        PreparedStatement lisayslause = null;
-//        
-//        try { 
-//
-//            String lisaaSql
-//                    = 
-//                    "insert into kayttaja(Kayttajatunnus,Salasana,Sahkoposti) values(?,?,?)";
-//            
-//            lisayslause = yhteys.prepareStatement(lisaaSql);
-//
-//            lisayslause.setString(1, nimiteksti.getText());
-//            lisayslause.setString(2, hashsalasana);
-//            lisayslause.setString(3, sahkopostiteksti.getText());
-//            int rowsAffected = lisayslause.executeUpdate();
-//
-//            return true;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        } finally {
-//            YhteydenOtto.suljeYhteys(yhteys);
-//        }
-//
-//    }
+
 
     
 }

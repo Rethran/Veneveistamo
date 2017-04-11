@@ -27,9 +27,9 @@ public class Kokeilutestaus extends JPanel {
     private JButton yhteyskokeilu;
     private JButton rekisterointi;
     public JFrame testailua;
-
+    
     public Kokeilutestaus() {
-        
+       
         //************* pohjan luonti
         testailua = new JFrame("Veneveistämö");
         testailua.setSize(450, 250);
@@ -49,7 +49,7 @@ public class Kokeilutestaus extends JPanel {
         salasanaT = new JPasswordField(20);
         rekisterointi = new JButton("Register");
 
-        YhteydenOtto k = new YhteydenOtto();
+        
         Rekisteriointi r = new Rekisteriointi();
         Paaikkuna p = new Paaikkuna();
         
@@ -80,15 +80,16 @@ public class Kokeilutestaus extends JPanel {
                 
                 String Nimi = nimiT.getText();
                 String Salasana = salasanaT.getText();
-                Tietovarasto t = new Tietovarasto();
-
+                
+                
                 
 
                 
 
-                try {
-                    if (t.checkUser(Nimi, Salasana) != -1) {
-
+                try{ 
+                    int ids = Tietovarasto.getInstance().checkUser(Nimi, Salasana);
+                    if (ids != -1) {
+                        Tietovarasto.getInstance().setids(ids);
                         System.out.println("toimii");
                        
                         p.paaikkuna.setVisible(true);
@@ -118,7 +119,7 @@ public class Kokeilutestaus extends JPanel {
                     YhteydenOtto.avaaYhteys();
 
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "puuha peete tää paska ei toimi ");
+                    JOptionPane.showMessageDialog(null, "puuha peete tää  ei toimi ");
                 }
                 testailua.setVisible(false);
                 r.kokeilu.setVisible(true);
@@ -131,7 +132,7 @@ public class Kokeilutestaus extends JPanel {
         yhteyskokeilu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Paaikkuna p = new Paaikkuna();
+                
                
                
                 p.paaikkuna.setVisible(true);

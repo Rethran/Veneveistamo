@@ -1,12 +1,12 @@
 
 package Mainwindow;
 
-import Kokeilutestaus.Kokeilutestaus;
 import java.sql.SQLException;
 
 
 public class Asiakashenkilo {
     private int kayttaja_id;
+    
     private String Kayttajatunnus;
     private String Salasana;
     private String Sahkoposti;
@@ -17,7 +17,7 @@ public class Asiakashenkilo {
     private String Katuosoite;
     private String Postitoimipaikka;
     private String Postinumero;
-    private Tietovarasto tieto = new Tietovarasto();
+   
     
     
     
@@ -40,8 +40,7 @@ public class Asiakashenkilo {
     }
 
     public Asiakashenkilo(String Kayttajatunnus, String Salasana, String Sahkoposti, String Nimi, String Sukunimi, String Puhelinnumero, String Maa, String Katuosoite, String Postitoimipaikka, String Postinumero) throws SQLException {
-        Kokeilutestaus k = new Kokeilutestaus();
-        Tietovarasto t = new Tietovarasto();
+        
         this.Kayttajatunnus = Kayttajatunnus;
         this.Salasana = Salasana;
         this.Sahkoposti = Sahkoposti;
@@ -52,7 +51,7 @@ public class Asiakashenkilo {
         this.Katuosoite = Katuosoite;
         this.Postitoimipaikka = Postitoimipaikka;
         this.Postinumero = Postinumero;
-        this.kayttaja_id = t.checkUser(Kayttajatunnus, Salasana);
+        
         
     }
 
@@ -110,7 +109,8 @@ public class Asiakashenkilo {
     }
  
 
-    public Asiakashenkilo(String Nimi, String Sukunimi, String Puhelinnumero, String Maa, String Katuosoite, String Postitoimipaikka, String Postinumero) {
+    public Asiakashenkilo( String Nimi, String Sukunimi, String Puhelinnumero, String Maa, String Katuosoite, String Postitoimipaikka, String Postinumero) {
+        
         this.Nimi = Nimi;
         this.Sukunimi = Sukunimi;
         this.Puhelinnumero = Puhelinnumero;
@@ -119,5 +119,6 @@ public class Asiakashenkilo {
         this.Postitoimipaikka = Postitoimipaikka;
         this.Postinumero = Postinumero;
     }
+    
    
 }

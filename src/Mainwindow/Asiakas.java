@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import Mainwindow.Asiakashenkilo;
+
 
 
 
@@ -30,16 +30,18 @@ public class Asiakas extends JPanel{
     private JTextField postinumeroT = new JTextField(20);
     private JLabel Katuosoite = new JLabel("Katuosoite");
     private JTextField katuosoiteT = new JTextField(20);
-    private JTextField sahkopostiT = new JTextField(20);
     private JButton sulje = new JButton("Close");
     private JButton valmis = new JButton("Accept");
-    private Tietovarasto tieto = new Tietovarasto();
+    
+     Paaikkuna p = new Paaikkuna();
+    
     //shhhhhhhhhHhhhhhhh 
     public Asiakas(){
         //**********************tietoikkunan tekeminen
         ali.setAlwaysOnTop(true);
         ali.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ali.setSize(315, 400);
+        ali.setLocation(450, 200);
         ali.setLayout(null);
         ali.setVisible(false);
         
@@ -52,10 +54,10 @@ public class Asiakas extends JPanel{
         ali.add(Postitoimipaikka);
         ali.add(Postinumero);
         ali.add(Katuosoite);
-       //ali.add(Sahkoposti);
+       
         ali.add(valmis);
         ali.add(sulje);
-        //tekstifieldien lisäys
+       
         ali.add(nimiT);
         ali.add(sukunimiT);
         ali.add(puhelinnumeroT);
@@ -97,10 +99,15 @@ public class Asiakas extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                
+                
+               Tietovarasto t = new Tietovarasto();
+
               
+              
+               
+               
                 try {
-                    tieto.lisaaAsiakas(new Asiakashenkilo(nimiT.getText(),sukunimiT.getText(),puhelinnumeroT.getText(),maaT.getText(),katuosoiteT.getText(),postitoimipaikkaT.getText(),postinumeroT.getText()));
-                    
+                    t.lisaaAsiakas(t.getIds(), new Asiakashenkilo(nimiT.getText(),sukunimiT.getText(),puhelinnumeroT.getText(),maaT.getText(),katuosoiteT.getText(),postitoimipaikkaT.getText(),postinumeroT.getText()));
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -115,7 +122,7 @@ public class Asiakas extends JPanel{
         sulje.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Paaikkuna p = new Paaikkuna();
+               
                ali.setVisible(false);
                p.paaikkuna.setVisible(true);
                
@@ -128,39 +135,6 @@ public class Asiakas extends JPanel{
     
     
 }
-//    private void lisaaAsiakas() throws SQLException{
-//       Connection yhteys = YhteydenOtto.avaaYhteys();
-//       PreparedStatement lisayslause = null;
-//       ResultSet rs = null;
-//       
-//       try{
-//                                                                                                                 //arvo  1,2,3,4,5,6,7                    //8    
-//       //String SLause = "update kayttaja set(Nimi,Sukunimi,Puhelinnumero,Maa,Katuosoite,Postitoimipaikka,Postinumero) values (?,?,?,?,?,?,?) where kayttaja_id = ?";
-//       String SLause = "update kayttaja set Nimi = ?, Sukunimi = ?, Puhelinnumero = ?, Maa = ?, Katuosoite = ?, Postitoimipaikka = ?, Postinumero = ? where kayttaja_id = ? ";
-//       lisayslause = yhteys.prepareStatement(SLause);
-//       
-//       lisayslause.setString(1, nimiT.getText());
-//       lisayslause.setString(2, sukunimiT.getText());
-//       lisayslause.setString(3, puhelinnumeroT.getText());
-//       lisayslause.setString(4, maaT.getText());
-//       lisayslause.setString(5, katuosoiteT.getText());
-//       lisayslause.setString(6, postitoimipaikkaT.getText());
-//       lisayslause.setString(7, postinumeroT.getText());
-//       
-//      
-//     
-//       int rowsAffected = lisayslause.executeUpdate();
-//      
-//       }catch(Exception ex){
-//           System.out.println("asiakas insertti lause on perseestä");
-//          ex.printStackTrace();
-//       }finally{
-//           YhteydenOtto.suljeYhteys(yhteys);
-//           
-//       }
-//       
-//       
-//        
-//    }
+
     
 }
