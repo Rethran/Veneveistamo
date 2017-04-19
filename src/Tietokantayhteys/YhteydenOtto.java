@@ -15,7 +15,8 @@ public class YhteydenOtto {
             Class.forName("com.mysql.jdbc.Driver");
             return DriverManager.getConnection(url, user, password);
         } catch (Exception ex) {
-            System.out.println("driveri ei toimi" + ex);
+            System.out.println("driveri ei toimi");
+            ex.printStackTrace();
         }
 
         return null;

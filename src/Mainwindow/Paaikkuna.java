@@ -12,6 +12,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import Mainwindow.Tuoteluettelo;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -28,11 +32,12 @@ import javax.swing.JPanel;
    private final JButton Veneveistamoyritys;
    private final JButton Asiakas;
    private JButton alihankkijat;
+   private Tietovarasto varasto;
     public Paaikkuna(){
         
         
         //pääikkunan luonti *********************"toimii"
-        
+        varasto = Tietovarasto.getInstance();
         paaikkuna = new JFrame("MainWindow");
         paaikkuna.setSize(400,400);
         paaikkuna.setLayout(null);
@@ -75,15 +80,21 @@ import javax.swing.JPanel;
         menu.add(logout);
         menu.add(exit);
         paaikkuna.setJMenuBar(menuBar);
-       
+        
         
         //******************************************nabuloitten toiminnat
         Tuoteluettelo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-             Tuoteluettelo t = new Tuoteluettelo();
+                
+                try {
+                    Tuoteluettelo t = new Tuoteluettelo(varasto);
+                    t.tuotteet.setVisible(true);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
              paaikkuna.setVisible(false);
-             t.tuotteet.setVisible(true);
+             
             }
         });
         Tilaus.addActionListener(new ActionListener() {

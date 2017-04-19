@@ -38,6 +38,7 @@ public class Asiakashenkilo {
         this.Postinumero = Postinumero;
         
     }
+    
 
     public Asiakashenkilo(String Kayttajatunnus, String Salasana, String Sahkoposti, String Nimi, String Sukunimi, String Puhelinnumero, String Maa, String Katuosoite, String Postitoimipaikka, String Postinumero) throws SQLException {
         
