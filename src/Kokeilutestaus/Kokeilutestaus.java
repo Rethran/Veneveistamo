@@ -96,7 +96,8 @@ public class Kokeilutestaus extends JPanel {
                         testailua.setVisible(false);
 
                     } else {
-                        JOptionPane.showMessageDialog(null, "Incorrect username or password");
+                        JOptionPane.showMessageDialog(null, "ACCES DENIED BY THE JAVA SENSEI");
+                        
 
                     }
                 } catch (SQLException ex) {
@@ -120,6 +121,7 @@ public class Kokeilutestaus extends JPanel {
 
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "puuha peete tää  ei toimi ");
+                    ex.printStackTrace();
                 }
                 testailua.setVisible(false);
                 r.kokeilu.setVisible(true);
