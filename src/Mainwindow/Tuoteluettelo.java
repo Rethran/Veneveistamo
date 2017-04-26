@@ -3,6 +3,8 @@ package Mainwindow;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,9 +15,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import Mainwindow.Tavaralisays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 
 public class Tuoteluettelo extends JPanel {
@@ -48,9 +47,12 @@ public class Tuoteluettelo extends JPanel {
     private JButton uusituoteb = new JButton("New Product");
     private JButton haetuotenappi = new JButton("Find Product");
     private JButton sulje = new JButton("Close");
+    private JButton poista = new JButton ("delete");
 
     private JMenuBar bar = new JMenuBar();
     private Tietovarasto varasto;
+    
+    
     public Tuoteluettelo(Tietovarasto varasto) throws SQLException {
     
     this.varasto=varasto;
@@ -64,6 +66,7 @@ public class Tuoteluettelo extends JPanel {
         tuotteet.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //nabuloitten ja textfieldien settaaminen******
+        
         tuotenimil.setBounds(40, 90, 100, 20);
         tuotenimi.setBounds(180, 90, 100, 20);
         tilausnumerol.setBounds(40, 110, 100, 20);
@@ -85,6 +88,7 @@ public class Tuoteluettelo extends JPanel {
         sulje.setBounds(150, 300, 100, 20);
         uusi.setSize(60, 20);
         uusituoteb.setBounds(50, 300, 100, 20);
+        poista.setBounds(50,350,100,20);
         tuotteetc.setLocation(200, 10);
         tuotteetc.setSize(100, 30);
         paata.setSize(90, 30);
@@ -93,7 +97,7 @@ public class Tuoteluettelo extends JPanel {
         bar.setSize(105, 20);
 
         uusituoteb.setVisible(false);
-        ////
+        poista.setVisible(true);
         tuotenimil.setVisible(false);
         tuotenimi.setVisible(false);
         tilausnumerol.setVisible(false);
@@ -115,6 +119,7 @@ public class Tuoteluettelo extends JPanel {
         tuotteetc.setVisible(false);
 
         //komponenttien luonti
+        tuotteet.add(poista);
         tuotteet.add(tuotenimi);
         tuotteet.add(tuotenimil);
         tuotteet.add(tilausnumerol);
@@ -142,8 +147,37 @@ public class Tuoteluettelo extends JPanel {
         paata.add(uusi);
         paata.add(hae);
         
+        poista.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                SuoritaPoisto();
+            } catch (SQLException ex) {
+                System.out.println("poisto lause ei toimi");
+                ex.printStackTrace();
+                
+            }
+        }
+    });
         
-        
+        Paivita.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Tietovarasto t = Tietovarasto.getInstance();
+            
+            Tavaralisays paivita= (Tavaralisays)tuotteetc.getSelectedItem();
+            
+            try {
+               
+                t.Pavita(paivita.getLuettelo_id(), new Tavaralisays(lahtohinta.getText(),masto.getText(),puulaji.getText(),ihmismaara.getText(),tuotenimi.getText(),tilausnumero.getText(),vari.getText(),venetyyppi.getText()));
+                
+                System.out.println("toimii");
+            } catch (SQLException ex) {
+                System.out.println("Pavita nabula ei toimi");
+               ex.printStackTrace();
+            }
+        }
+    });
         
         hae.addActionListener(new ActionListener() {
             @Override
@@ -181,6 +215,9 @@ public class Tuoteluettelo extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Taytatiedot();
+                Paivita.setVisible(true);
+               
+                uusituoteb.setVisible(false);
               
             }
         });
@@ -271,11 +308,12 @@ private void Taytatiedot(){
                     lahtohinta.setText(poistettava.getLahtohinta());              
         }
 private void PaivitaValintalista() throws SQLException{
-    
+   
     tuotepohja.removeAllElements();
-    for(Tavaralisays tavara:varasto.Haekaikkitavarat()){
+  for(Tavaralisays tavara:varasto.Haekaikkitavarat()){
         tuotepohja.addElement(tavara);
     }
         Taytatiedot();
      }
+
 }

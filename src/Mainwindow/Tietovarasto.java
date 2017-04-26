@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import jbcrypt.BCrypt;
 import javax.swing.JButton;
-
+import Mainwindow.Tuoteluettelo;
 public class Tietovarasto {
     
     
@@ -258,8 +258,37 @@ public class Tietovarasto {
     
     return tavaratlista;
 }
+    public void Pavita(int tuoteid, Tavaralisays tavara) throws SQLException{
+        Connection yhteys = YhteydenOtto.avaaYhteys();
+        
+       
+        PreparedStatement stmt = null;
+        try{
+            
+            String paivitalause = "UPDATE tuoteluettelo SET Tuotenimi = ?, Tuotteentilausnumero = ?, Venetyyppi = ?, Soutajapaikkojenmaara = ?, Puulaji = ?, Vari = ?, Mastomahdollisuus =?, Lahtohinta = ? WHERE luettelo_id =?";
+            stmt = yhteys.prepareStatement(paivitalause);
+            stmt.setString(1, tavara.getTuotenimi());
+            stmt.setString(2, tavara.getTuotteentilausnumero());
+            stmt.setString(3, tavara.getVenetyyppi());
+            stmt.setString(4, tavara.getSoutajapaikkojenmaara());
+            stmt.setString(5, tavara.getPuulaji());
+            stmt.setString(6, tavara.getVari());
+            stmt.setString(7, tavara.getMastomahdollisuus());
+            stmt.setString(8, tavara.getLahtohinta());
+            stmt.setInt(9, tuoteid);
+            int rowsaffected = stmt.executeUpdate();
+           
+        }catch(Exception ex){
+            ex.printStackTrace();
+            
+        }finally{
+            stmt.close();
+            YhteydenOtto.suljeYhteys(yhteys);
+        }
+    }
   public void PoistaTavara(int luettelo_id) throws SQLException{
       Connection yhteys = YhteydenOtto.avaaYhteys();
+      
       if(yhteys == null){
           return;
       }
