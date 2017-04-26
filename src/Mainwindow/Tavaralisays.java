@@ -98,6 +98,9 @@ public class Tavaralisays {
     public String toString() {
         return  Tuotenimi;
     }
+
+    
+    
     
     
     public void setLahtohinta(String Lahtohinta) {
