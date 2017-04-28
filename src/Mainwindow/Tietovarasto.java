@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import jbcrypt.BCrypt;
 import javax.swing.JButton;
-import Mainwindow.Tuoteluettelo;
+
 public class Tietovarasto {
     
-    
+    //jotain ihme gettereitä *****************
     private static Tietovarasto instance;
     public static Tietovarasto getInstance(){
         if(instance == null)
@@ -42,6 +42,7 @@ public class Tietovarasto {
       return tuote_ids;
         
     }
+    // getterit loppuu ****************************
      public boolean lisaaHenkiloita(String kayttajatunnus, String salasana, String sahkoposti) throws SQLException {
         Connection yhteys = YhteydenOtto.avaaYhteys();
        
@@ -215,7 +216,7 @@ public class Tietovarasto {
                 
                 
                
-                /////BRAIN DAMAGE FOR TOO GOOD IDEA!!!
+               
             }
             
         }catch(Exception ex){
@@ -228,7 +229,6 @@ public class Tietovarasto {
     }
     public List<Tavaralisays> Haekaikkitavarat() throws SQLException{
         List<Tavaralisays> tavaratlista = new ArrayList<Tavaralisays>();
-        //tavaratlista.add(new Tavaralisays( 1,"fkdfmkdf","ofdkfmdfmk","kfdmkfdkf","kmfdkmssdmff","kffmkdfdmf","kmfdkfm","mkfefekf","FEFJI"));
         Connection yhteys = YhteydenOtto.avaaYhteys();
         if(yhteys != null){
             PreparedStatement  stmt= null;
@@ -297,7 +297,7 @@ public class Tietovarasto {
           try{
               String poistosql = "delete from tuoteluettelo where luettelo_id=?";
               stmt = yhteys.prepareStatement(poistosql);
-              stmt.setInt(1, Tavaralisays.getInstance().getLuettelo_id());
+              stmt.setInt(1, luettelo_id);
               stmt.executeUpdate();
           }catch(Exception ex){
               ex.printStackTrace();

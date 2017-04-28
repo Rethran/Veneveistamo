@@ -3,9 +3,6 @@ package Mainwindow;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -20,7 +17,7 @@ import javax.swing.DefaultComboBoxModel;
 public class Tuoteluettelo extends JPanel {
     
 
-    public JFrame tuotteet = new JFrame("ProductList");
+    public JFrame tuotteet = new JFrame("Catalog");
 
     private JTextField tuotenimi = new JTextField(20);
     private JLabel tuotenimil = new JLabel("Product Name");
@@ -88,7 +85,7 @@ public class Tuoteluettelo extends JPanel {
         sulje.setBounds(150, 300, 100, 20);
         uusi.setSize(60, 20);
         uusituoteb.setBounds(50, 300, 100, 20);
-        poista.setBounds(50,350,100,20);
+        poista.setBounds(100,350,100,20);
         tuotteetc.setLocation(200, 10);
         tuotteetc.setSize(100, 30);
         paata.setSize(90, 30);
@@ -97,7 +94,7 @@ public class Tuoteluettelo extends JPanel {
         bar.setSize(105, 20);
 
         uusituoteb.setVisible(false);
-        poista.setVisible(true);
+        poista.setVisible(false);
         tuotenimil.setVisible(false);
         tuotenimi.setVisible(false);
         tilausnumerol.setVisible(false);
@@ -155,7 +152,6 @@ public class Tuoteluettelo extends JPanel {
             } catch (SQLException ex) {
                 System.out.println("poisto lause ei toimi");
                 ex.printStackTrace();
-                
             }
         }
     });
@@ -207,10 +203,11 @@ public class Tuoteluettelo extends JPanel {
                 masto.setVisible(true);
                 lahtohinta.setVisible(true);
                 lahtohintal.setVisible(true);
+                poista.setVisible(true);
 
             }
         });
-        
+        // nappuloitten funktio lisääminen
         tuotteetc.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -254,7 +251,10 @@ public class Tuoteluettelo extends JPanel {
                 Paivita.setVisible(false);
                 haetuotenappi.setVisible(false);
                 uusituoteb.setVisible(true);
-                //tekstien poisto operaatio
+                
+
+
+//tekstien poisto operaatio
                 tuotenimi.setText(null);
                 tilausnumero.setText(null);
                 venetyyppi.setText(null);
