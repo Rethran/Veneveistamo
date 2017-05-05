@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.ImageIcon;
 
 
 public class Tilaus extends JPanel {
@@ -19,7 +20,7 @@ public class Tilaus extends JPanel {
     private JLabel Hinta;
     private JLabel hintalabeli;
     private JButton poistu;
-   // private JLabel kuva;
+    private JLabel kuva;
     
     public Tilaus(){
         //**********************tekeminen
@@ -36,10 +37,8 @@ public class Tilaus extends JPanel {
         hintalabeli = new JLabel("Hinta");
         asiakastiedot = new JLabel("asiakasinfo:");
         poistu = new JButton("Close");
-        //kuva = new JLabel("kuva veneestä");
-        
-        
-       
+        kuva = new JLabel("kuva veneestä");
+      
         
         tilausikkuna.add(poistu);
         tilausikkuna.add(Vene);
@@ -48,11 +47,11 @@ public class Tilaus extends JPanel {
         tilausikkuna.add(Hinta);
         tilausikkuna.add(hintalabeli);
         tilausikkuna.add(asiakastiedot);
-        //tilausikkuna.add(kuva);
+        tilausikkuna.add(kuva);
         
         
         //************************komponenttien tekeminen
-        //kuva.setBounds(10, 200, 100, 25);
+        kuva.setBounds(10, 200, 400, 300);
         asiakastiedot.setBounds(28,30,100,25);
         Tilausnumero.setBounds(42,50, 100, 25);
         Hinta.setBounds(10,70,100,25);
@@ -60,18 +59,21 @@ public class Tilaus extends JPanel {
         tilauslabeli.setBounds(105, 52, 35, 20);
         poistu.setBounds(125,300,100,20);
         
-        
+        ////////////jotain///////////////////////////
         poistu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                Paaikkuna p = new Paaikkuna();
                tilausikkuna.setVisible(false);
                p.paaikkuna.setVisible(true);
+           
                
             }
         });
         
-            
+        ImageIcon icon = new ImageIcon("Kuvat/kaleeri.png");
+        
+        kuva.setIcon(icon);
 }
     
 }

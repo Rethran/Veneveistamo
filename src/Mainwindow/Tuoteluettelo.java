@@ -2,6 +2,7 @@ package Mainwindow;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,6 +14,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Tuoteluettelo extends JPanel {
     
@@ -45,25 +48,30 @@ public class Tuoteluettelo extends JPanel {
     private JButton haetuotenappi = new JButton("Find Product");
     private JButton sulje = new JButton("Close");
     private JButton poista = new JButton ("delete");
-
+    private JButton etsitiedosto = new JButton("Search files");
+    private JButton lisaakuva = new JButton("insert picture");
+    private JTextField tiedostoteksti = new JTextField();
     private JMenuBar bar = new JMenuBar();
     private Tietovarasto varasto;
-    
+    private File sourceFile;
     
     public Tuoteluettelo(Tietovarasto varasto) throws SQLException {
     
     this.varasto=varasto;
    
         //tuoteluettelon ikkunaluonti
-        tuotteet.setSize(300, 500);
-        tuotteet.setLocation(450, 200);
+        tuotteet.setSize(560, 500);
+        tuotteet.setLocation(100, 200);
         tuotteet.setLayout(null);
-        tuotteet.setAlwaysOnTop(true);
+        
         tuotteet.setVisible(false);
         tuotteet.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //nabuloitten ja textfieldien settaaminen******
         
+        lisaakuva.setBounds (140, 10, 120, 20);
+        tiedostoteksti.setBounds(200,50,350,20);
+        etsitiedosto.setBounds(40,50,150,20);
         tuotenimil.setBounds(40, 90, 100, 20);
         tuotenimi.setBounds(180, 90, 100, 20);
         tilausnumerol.setBounds(40, 110, 100, 20);
@@ -114,8 +122,11 @@ public class Tuoteluettelo extends JPanel {
         Paivita.setVisible(false);
         haetuotenappi.setVisible(false);
         tuotteetc.setVisible(false);
-
+        etsitiedosto.setVisible(true);
+        
         //komponenttien luonti
+        tuotteet.add(tiedostoteksti);
+        tuotteet.add(etsitiedosto);
         tuotteet.add(poista);
         tuotteet.add(tuotenimi);
         tuotteet.add(tuotenimil);
@@ -133,6 +144,7 @@ public class Tuoteluettelo extends JPanel {
         tuotteet.add(masto);
         tuotteet.add(lahtohintal);
         tuotteet.add(lahtohinta);
+        tuotteet.add(lisaakuva);
 
         tuotteet.add(uusituoteb);
         tuotteet.add(Paivita);
@@ -143,6 +155,27 @@ public class Tuoteluettelo extends JPanel {
         tuotteet.add(tuotteetc);
         paata.add(uusi);
         paata.add(hae);
+        
+        etsitiedosto.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser chooser = new JFileChooser("\\kuvat");
+     FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG", "JPG");
+     chooser.setFileFilter(filter);
+     int status = chooser.showOpenDialog(null);
+     if(status == JFileChooser.APPROVE_OPTION){
+         File file = chooser.getSelectedFile();
+         if(file == null){
+             return;
+         }
+         String filename = chooser.getSelectedFile().getAbsolutePath();
+         sourceFile = new File(filename);
+         tiedostoteksti.setText(filename);
+         
+     }
+     
+        }
+    });
         
         poista.addActionListener(new ActionListener() {
         @Override
@@ -166,7 +199,7 @@ public class Tuoteluettelo extends JPanel {
             try {
                
                 t.Pavita(paivita.getLuettelo_id(), new Tavaralisays(lahtohinta.getText(),masto.getText(),puulaji.getText(),ihmismaara.getText(),tuotenimi.getText(),tilausnumero.getText(),vari.getText(),venetyyppi.getText()));
-                
+                t.Lisaakuva(sourceFile);
                 System.out.println("toimii");
             } catch (SQLException ex) {
                 System.out.println("Pavita nabula ei toimi");
@@ -204,6 +237,7 @@ public class Tuoteluettelo extends JPanel {
                 lahtohinta.setVisible(true);
                 lahtohintal.setVisible(true);
                 poista.setVisible(true);
+                
 
             }
         });

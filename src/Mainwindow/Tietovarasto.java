@@ -3,12 +3,17 @@ package Mainwindow;
 
 import Rekisteri.Security;
 import Tietokantayhteys.YhteydenOtto;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.imageio.ImageIO;
 import jbcrypt.BCrypt;
 import javax.swing.JButton;
 
@@ -155,17 +160,41 @@ public class Tietovarasto {
         
     }
     //TUOTELUETTELON SQL KAMAT*************************************
+    public void Lisaakuva(File file) throws SQLException{
+        
+     Connection yhteys = YhteydenOtto.avaaYhteys();
+     
+     PreparedStatement pst = null;
+     
+        try {
+            BufferedImage img = ImageIO.read(file);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(img, "jpg", baos);
+            Blob blFile = new javax.sql.rowset.serial.SerialBlob(baos.toByteArray());
+            String lisaakuva = ("update tuoteluettelo set Kuva = ? where luettelo_id = ?");
+           pst = yhteys.prepareStatement(lisaakuva);
+            pst.setBlob(1, blFile);
+            pst.setInt(2, 26);
+            pst.execute();
+        }catch(Exception ex){
+           ex.printStackTrace();
+        }finally{
+            pst.close();
+            yhteys.close();
+        }
     
+}
+            
     public void Lisaatavarat (JButton button, Tavaralisays tieto ) throws SQLException{
         Connection yhteys = YhteydenOtto.avaaYhteys();
         
         PreparedStatement pst = null;
-        ResultSet rs = null;
+        
        
         
         try{ 
-                                                                                                                                                                       //1,2,3,4,5,6,7,8
-            String lisaasql = "Insert into tuoteluettelo(Lahtohinta,Mastomahdollisuus,Puulaji,Soutajapaikkojenmaara,Tuotenimi,Tuotteentilausnumero,Vari,Venetyyppi) values(?,?,?,?,?,?,?,?)";
+                                                                                                                                                                                //1,2,3,4,5,6,7,8
+            String lisaasql = "Insert into tuoteluettelo(Lahtohinta,Mastomahdollisuus,Puulaji,Soutajapaikkojenmaara,Tuotenimi,Tuotteentilausnumero,Vari,Venetyyppi,) values(?,?,?,?,?,?,?,?)";
         pst = yhteys.prepareStatement(lisaasql);
         
         pst.setString(1, tieto.getLahtohinta());
@@ -176,6 +205,8 @@ public class Tietovarasto {
         pst.setString(6, tieto.getTuotteentilausnumero());
         pst.setString(7, tieto.getVari());
         pst.setString(8, tieto.getVenetyyppi());
+        
+        
         int rowsAffected = pst.executeUpdate();
         
         
