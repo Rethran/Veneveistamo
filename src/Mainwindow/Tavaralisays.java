@@ -16,6 +16,11 @@ public class Tavaralisays {
     private String Tuotteentilausnumero;
     private String Vari;
     private String Venetyyppi;
+    private String Kuva;
+
+    public String getKuva() {
+        return Kuva;
+    }
     private int luettelo_id;
 
     public Tavaralisays(int luettelo_id, String Tuotenimi,String Tuotteentilausnumero,String Mastomahdollisuus, String Puulaji, String Soutajapaikkojenmaara,String Vari, String Venetyyppi,String Lahtohinta) {
