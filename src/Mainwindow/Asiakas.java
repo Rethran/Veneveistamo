@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 
 
 public class Asiakas extends JPanel{
-    public JFrame ali = new JFrame("Asiakas");
+    public JFrame asiakasikkuna = new JFrame("Asiakas");
     
     private JLabel nimi = new JLabel("Nimi");
     private JTextField nimiT = new JTextField(20);
@@ -33,38 +33,38 @@ public class Asiakas extends JPanel{
     private JButton sulje = new JButton("Close");
     private JButton valmis = new JButton("Accept");
     
-     Paaikkuna p = new Paaikkuna();
+     Paaikkuna paaikkunapohja = new Paaikkuna();
     
     //shhhhhhhhhHhhhhhhh 
     public Asiakas(){
         //**********************tietoikkunan tekeminen
-        ali.setAlwaysOnTop(true);
-        ali.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ali.setSize(315, 400);
-        ali.setLocation(450, 200);
-        ali.setLayout(null);
-        ali.setVisible(false);
+        asiakasikkuna.setAlwaysOnTop(true);
+        asiakasikkuna.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        asiakasikkuna.setSize(315, 400);
+        asiakasikkuna.setLocation(450, 200);
+        asiakasikkuna.setLayout(null);
+        asiakasikkuna.setVisible(false);
         
          //*************** lisäys);
          
-        ali.add(nimi);
-        ali.add(sukunimi);
-        ali.add(puhelinnumero);
-        ali.add(Maa);
-        ali.add(Postitoimipaikka);
-        ali.add(Postinumero);
-        ali.add(Katuosoite);
+        asiakasikkuna.add(nimi);
+        asiakasikkuna.add(sukunimi);
+        asiakasikkuna.add(puhelinnumero);
+        asiakasikkuna.add(Maa);
+        asiakasikkuna.add(Postitoimipaikka);
+        asiakasikkuna.add(Postinumero);
+        asiakasikkuna.add(Katuosoite);
        
-        ali.add(valmis);
-        ali.add(sulje);
+        asiakasikkuna.add(valmis);
+        asiakasikkuna.add(sulje);
        
-        ali.add(nimiT);
-        ali.add(sukunimiT);
-        ali.add(puhelinnumeroT);
-        ali.add(maaT);
-        ali.add(postitoimipaikkaT);
-        ali.add(postinumeroT);
-        ali.add(katuosoiteT);
+        asiakasikkuna.add(nimiT);
+        asiakasikkuna.add(sukunimiT);
+        asiakasikkuna.add(puhelinnumeroT);
+        asiakasikkuna.add(maaT);
+        asiakasikkuna.add(postitoimipaikkaT);
+        asiakasikkuna.add(postinumeroT);
+        asiakasikkuna.add(katuosoiteT);
        
       
         
@@ -100,7 +100,7 @@ public class Asiakas extends JPanel{
             public void actionPerformed(ActionEvent e) {
                
                 
-               Tietovarasto t = new Tietovarasto();
+               SQLVarasto t = new SQLVarasto();
 
               
               
@@ -114,7 +114,7 @@ public class Asiakas extends JPanel{
                 
                 
                 Paaikkuna p = new Paaikkuna();
-                ali.setVisible(false);
+                asiakasikkuna.setVisible(false);
                 p.paaikkuna.setVisible(true);
             }
             
@@ -123,8 +123,8 @@ public class Asiakas extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                
-               ali.setVisible(false);
-               p.paaikkuna.setVisible(true);
+               asiakasikkuna.setVisible(false);
+               paaikkunapohja.paaikkuna.setVisible(true);
                
             }
         });

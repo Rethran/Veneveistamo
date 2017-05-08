@@ -1,7 +1,7 @@
-package Kokeilutestaus;
+package Kirjautumisikkuna;
 
 import Mainwindow.Paaikkuna;
-import Mainwindow.Tietovarasto;
+import Mainwindow.SQLVarasto;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -9,14 +9,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import Tietokantayhteys.YhteydenOtto;
+import Tietokantayhteys.YhteydenLuonti;
 import javax.swing.JOptionPane;
-import Rekisteri.Rekisteriointi;
+import Rekisteri.Rekisterointi;
 import java.sql.SQLException;
 import javax.swing.JPasswordField;
 
 
-public class Kokeilutestaus extends JPanel {
+public class Kirjautumisikkuna extends JPanel {
 
     
     private JLabel nimil;
@@ -26,16 +26,16 @@ public class Kokeilutestaus extends JPanel {
     private JTextField salasanaT;
     private JButton yhteyskokeilu;
     private JButton rekisterointi;
-    public JFrame testailua;
+    public JFrame kirjautumispohja;
     
-    public Kokeilutestaus() {
+    public Kirjautumisikkuna() {
        
         //************* pohjan luonti
-        testailua = new JFrame("Veneveistämö");
-        testailua.setSize(450, 250);
-        testailua.setLocation(300, 200);
-        testailua.setLayout(null);
-        testailua.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        kirjautumispohja = new JFrame("Veneveistämö");
+        kirjautumispohja.setSize(450, 250);
+        kirjautumispohja.setLocation(300, 200);
+        kirjautumispohja.setLayout(null);
+        kirjautumispohja.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
        
         
@@ -50,7 +50,7 @@ public class Kokeilutestaus extends JPanel {
         rekisterointi = new JButton("Register");
 
         
-        Rekisteriointi r = new Rekisteriointi();
+        Rekisterointi r = new Rekisterointi();
         Paaikkuna p = new Paaikkuna();
         
 
@@ -65,13 +65,13 @@ public class Kokeilutestaus extends JPanel {
         yhteyskokeilu.setBounds(360, 140, 40, 20);
 
         //komponentit
-        testailua.add(nimil);
-        testailua.add(salasanal);
-        testailua.add(kirjautumisnappula);
-        testailua.add(nimiT);
-        testailua.add(salasanaT);
-        testailua.add(yhteyskokeilu);
-        testailua.add(rekisterointi);
+        kirjautumispohja.add(nimil);
+        kirjautumispohja.add(salasanal);
+        kirjautumispohja.add(kirjautumisnappula);
+        kirjautumispohja.add(nimiT);
+        kirjautumispohja.add(salasanaT);
+        kirjautumispohja.add(yhteyskokeilu);
+        kirjautumispohja.add(rekisterointi);
         
 
         kirjautumisnappula.addActionListener(new ActionListener() {
@@ -87,16 +87,16 @@ public class Kokeilutestaus extends JPanel {
                 
 
                 try{ 
-                    int ids = Tietovarasto.getInstance().checkUser(Nimi, Salasana);
+                    int ids = SQLVarasto.getInstance().checkUser(Nimi, Salasana);
                     if (ids != -1) {
-                        Tietovarasto.getInstance().setids(ids);
+                        SQLVarasto.getInstance().setids(ids);
                         System.out.println("toimii");
                        
                         p.paaikkuna.setVisible(true);
-                        testailua.setVisible(false);
+                        kirjautumispohja.setVisible(false);
 
                     } else {
-                        JOptionPane.showMessageDialog(null, "ACCES DENIED BY THE JAVA SENSEI");
+                        JOptionPane.showMessageDialog(null, "Wrong username or password");
                         
 
                     }
@@ -117,13 +117,13 @@ public class Kokeilutestaus extends JPanel {
                
 
                 try {
-                    YhteydenOtto.avaaYhteys();
+                    YhteydenLuonti.avaaYhteys();
 
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "puuha peete tää  ei toimi ");
                     ex.printStackTrace();
                 }
-                testailua.setVisible(false);
+                kirjautumispohja.setVisible(false);
                 r.kokeilu.setVisible(true);
                 
             }
@@ -138,7 +138,7 @@ public class Kokeilutestaus extends JPanel {
                
                
                 p.paaikkuna.setVisible(true);
-                 testailua.setVisible(false);
+                 kirjautumispohja.setVisible(false);
 
             }
         });
@@ -149,8 +149,8 @@ public class Kokeilutestaus extends JPanel {
     }
 
     public static void main(String[] args) throws SQLException {
-       Kokeilutestaus k = new Kokeilutestaus();
-      k.testailua.setVisible(true);
+       Kirjautumisikkuna kirjautumisikkuna = new Kirjautumisikkuna();
+      kirjautumisikkuna.kirjautumispohja.setVisible(true);
       
       
     }

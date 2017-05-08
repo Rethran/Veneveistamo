@@ -5,15 +5,15 @@
  */
 package Rekisteri;
 
-import Kokeilutestaus.Kokeilutestaus;
-import Mainwindow.Tietovarasto;
+import Kirjautumisikkuna.Kirjautumisikkuna;
+import Mainwindow.SQLVarasto;
 import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import Tietokantayhteys.YhteydenOtto;
+import Tietokantayhteys.YhteydenLuonti;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-public class Rekisteriointi extends JPanel {
+public class Rekisterointi extends JPanel {
 
     private JLabel rekisterinimi;
     private JTextField nimiteksti;
@@ -33,7 +33,7 @@ public class Rekisteriointi extends JPanel {
     private JButton sulje;
     public JFrame kokeilu;
 
-    public Rekisteriointi() {
+    public Rekisterointi() {
 
         //valmistelu
         rekisterinimi = new JLabel("Username");
@@ -49,7 +49,7 @@ public class Rekisteriointi extends JPanel {
         kokeilu.setLocation(450, 100);
         kokeilu.setLayout(null);
 
-        YhteydenOtto y = new YhteydenOtto();
+        YhteydenLuonti y = new YhteydenLuonti();
 
         //lisäys
         kokeilu.add(rekisterinimi);
@@ -81,8 +81,8 @@ public class Rekisteriointi extends JPanel {
         valmis.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Kokeilutestaus k = new Kokeilutestaus();
-                Tietovarasto tieto = new Tietovarasto();
+                Kirjautumisikkuna k = new Kirjautumisikkuna();
+                SQLVarasto tieto = new SQLVarasto();
                     
                 try {
                     
@@ -93,7 +93,7 @@ public class Rekisteriointi extends JPanel {
                     
 
                     kokeilu.setVisible(false);
-                    k.testailua.setVisible(true);
+                    k.kirjautumispohja.setVisible(true);
 
                     //tyhjentää tekstifieldit
                     nimiteksti.setText(null);
@@ -111,9 +111,9 @@ public class Rekisteriointi extends JPanel {
         sulje.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Kokeilutestaus k = new Kokeilutestaus();
+                Kirjautumisikkuna k = new Kirjautumisikkuna();
                 kokeilu.setVisible(false);
-                k.testailua.setVisible(true);
+                k.kirjautumispohja.setVisible(true);
                 
             }
         });

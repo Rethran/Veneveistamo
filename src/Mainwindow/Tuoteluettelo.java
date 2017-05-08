@@ -39,28 +39,27 @@ public class Tuoteluettelo extends JPanel {
     private JTextField lahtohinta = new JTextField(20);
     private JLabel lahtohintal = new JLabel("Lähtohinta");
     private DefaultComboBoxModel tuotepohja = new DefaultComboBoxModel();
-    private JComboBox tuotteetc = new JComboBox(tuotepohja);
-    public JMenu paata = new JMenu("Menu");
+    private JComboBox tuotenimicombo = new JComboBox(tuotepohja);
+    public JMenu tuotemuokkaamismenu = new JMenu("Menu");
     private JMenuItem uusi = new JMenuItem("New Product");
     private JMenuItem hae = new JMenuItem("Find or Upgrade Product");
     private JButton Paivita = new JButton("Update");
-    private JButton uusituoteb = new JButton("New Product");
-    private JButton haetuotenappi = new JButton("Find Product");
+    private JButton tuotenappula = new JButton("New Product");
     private JButton sulje = new JButton("Close");
     private JButton poista = new JButton ("delete");
     private JButton etsitiedosto = new JButton("Search files");
-    private JButton lisaakuva = new JButton("insert picture");
+    
     private JTextField tiedostoteksti = new JTextField();
     private JMenuBar bar = new JMenuBar();
-    private Tietovarasto varasto;
+    private SQLVarasto varasto;
     private File sourceFile;
     
-    public Tuoteluettelo(Tietovarasto varasto) throws SQLException {
+    public Tuoteluettelo(SQLVarasto varasto) throws SQLException {
     
     this.varasto=varasto;
    
         //tuoteluettelon ikkunaluonti
-        tuotteet.setSize(560, 500);
+        tuotteet.setSize(580, 500);
         tuotteet.setLocation(100, 200);
         tuotteet.setLayout(null);
         
@@ -69,7 +68,7 @@ public class Tuoteluettelo extends JPanel {
 
         //nabuloitten ja textfieldien settaaminen******
         
-        lisaakuva.setBounds (140, 10, 120, 20);
+        
         tiedostoteksti.setBounds(200,50,350,20);
         etsitiedosto.setBounds(40,50,150,20);
         tuotenimil.setBounds(40, 90, 100, 20);
@@ -89,19 +88,19 @@ public class Tuoteluettelo extends JPanel {
         lahtohintal.setBounds(40, 230, 100, 20);
         lahtohinta.setBounds(180, 230, 100, 20);
         Paivita.setBounds(50, 300, 100, 20);
-        haetuotenappi.setBounds(50, 300, 100, 20);
+        
         sulje.setBounds(150, 300, 100, 20);
         uusi.setSize(60, 20);
-        uusituoteb.setBounds(50, 300, 100, 20);
+        tuotenappula.setBounds(50, 300, 100, 20);
         poista.setBounds(100,350,100,20);
-        tuotteetc.setLocation(200, 10);
-        tuotteetc.setSize(100, 30);
-        paata.setSize(90, 30);
-        paata.setLocation(20, 20);
+        tuotenimicombo.setLocation(200, 10);
+        tuotenimicombo.setSize(100, 30);
+        tuotemuokkaamismenu.setSize(90, 30);
+        tuotemuokkaamismenu.setLocation(20, 20);
         bar.setLocation(20, 10);
         bar.setSize(105, 20);
 
-        uusituoteb.setVisible(false);
+        tuotenappula.setVisible(false);
         poista.setVisible(false);
         tuotenimil.setVisible(false);
         tuotenimi.setVisible(false);
@@ -120,8 +119,8 @@ public class Tuoteluettelo extends JPanel {
         lahtohintal.setVisible(false);
         lahtohinta.setVisible(false);
         Paivita.setVisible(false);
-        haetuotenappi.setVisible(false);
-        tuotteetc.setVisible(false);
+       
+        tuotenimicombo.setVisible(false);
         etsitiedosto.setVisible(true);
         
         //komponenttien luonti
@@ -144,17 +143,17 @@ public class Tuoteluettelo extends JPanel {
         tuotteet.add(masto);
         tuotteet.add(lahtohintal);
         tuotteet.add(lahtohinta);
-        tuotteet.add(lisaakuva);
+      
 
-        tuotteet.add(uusituoteb);
+        tuotteet.add(tuotenappula);
         tuotteet.add(Paivita);
-        tuotteet.add(haetuotenappi);
+        
         tuotteet.add(sulje);
         tuotteet.add(bar);
-        bar.add(paata);
-        tuotteet.add(tuotteetc);
-        paata.add(uusi);
-        paata.add(hae);
+        bar.add(tuotemuokkaamismenu);
+        tuotteet.add(tuotenimicombo);
+        tuotemuokkaamismenu.add(uusi);
+        tuotemuokkaamismenu.add(hae);
         
         etsitiedosto.addActionListener(new ActionListener() {
         @Override
@@ -192,14 +191,15 @@ public class Tuoteluettelo extends JPanel {
         Paivita.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            Tietovarasto t = Tietovarasto.getInstance();
+            SQLVarasto tietovarasto = SQLVarasto.getInstance();
             
-            Tavaralisays paivita= (Tavaralisays)tuotteetc.getSelectedItem();
+            Tavaralisays paivita= (Tavaralisays)tuotenimicombo.getSelectedItem();
             
             try {
                
-                t.Pavita(paivita.getLuettelo_id(), new Tavaralisays(lahtohinta.getText(),masto.getText(),puulaji.getText(),ihmismaara.getText(),tuotenimi.getText(),tilausnumero.getText(),vari.getText(),venetyyppi.getText()));
-                t.Lisaakuva(sourceFile);
+                tietovarasto.PaivitaTuote(paivita.getLuettelo_id(), new Tavaralisays(lahtohinta.getText(),masto.getText(),puulaji.getText(),ihmismaara.getText(),tuotenimi.getText(),tilausnumero.getText(),vari.getText(),venetyyppi.getText()));
+                tietovarasto.Lisaakuva(sourceFile, paivita.getLuettelo_id());
+                System.out.println(paivita.getLuettelo_id());
                 System.out.println("toimii");
             } catch (SQLException ex) {
                 System.out.println("Pavita nabula ei toimi");
@@ -218,8 +218,8 @@ public class Tuoteluettelo extends JPanel {
                 } catch (SQLException ex) {
                    ex.printStackTrace();
                 }
-                haetuotenappi.setVisible(true);
-                tuotteetc.setVisible(true);
+               
+                tuotenimicombo.setVisible(true);
                 tuotenimil.setVisible(true);
                 tuotenimi.setVisible(true);
                 tilausnumerol.setVisible(true);
@@ -242,23 +242,23 @@ public class Tuoteluettelo extends JPanel {
             }
         });
         // nappuloitten funktio lisääminen
-        tuotteetc.addActionListener(new ActionListener() {
+        tuotenimicombo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Taytatiedot();
                 Paivita.setVisible(true);
                
-                uusituoteb.setVisible(false);
+                tuotenappula.setVisible(false);
               
             }
         });
         sulje.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Paaikkuna p = new Paaikkuna();
+                Paaikkuna paaikkuna = new Paaikkuna();
 
                 tuotteet.setVisible(false);
-                p.paaikkuna.setVisible(true);
+                paaikkuna.paaikkuna.setVisible(true);
             }
         });
 
@@ -283,8 +283,8 @@ public class Tuoteluettelo extends JPanel {
                 lahtohintal.setVisible(true);
                 lahtohinta.setVisible(true);
                 Paivita.setVisible(false);
-                haetuotenappi.setVisible(false);
-                uusituoteb.setVisible(true);
+                
+                tuotenappula.setVisible(true);
                 
 
 
@@ -302,44 +302,44 @@ public class Tuoteluettelo extends JPanel {
 
             }
         });
-        uusituoteb.addActionListener(new ActionListener() {
+        tuotenappula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                Tietovarasto tieto = new Tietovarasto();
-                Paaikkuna p = new Paaikkuna();
+                SQLVarasto tieto = new SQLVarasto();
+                Paaikkuna paaikkuna = new Paaikkuna();
                 try {
-                    tieto.Lisaatavarat(uusituoteb, new Tavaralisays(lahtohinta.getText(), masto.getText(), puulaji.getText(), ihmismaara.getText(), tuotenimi.getText(), tilausnumero.getText(), vari.getText(), venetyyppi.getText()));
+                    tieto.Lisaatavara(tuotenappula, new Tavaralisays(lahtohinta.getText(), masto.getText(), puulaji.getText(), ihmismaara.getText(), tuotenimi.getText(), tilausnumero.getText(), vari.getText(), venetyyppi.getText()));
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
                 System.out.println("Olet lisännyt tuotteen onnistuneesti");
                 tuotteet.setVisible(false);
-                p.paaikkuna.setVisible(true);
+                paaikkuna.paaikkuna.setVisible(true);
             }
         });
         
         
     }
 private void SuoritaPoisto() throws SQLException{
-    Tavaralisays poistettava=(Tavaralisays)tuotteetc.getSelectedItem();
+    Tavaralisays poistettava=(Tavaralisays)tuotenimicombo.getSelectedItem();
     if(poistettava==null) return;
-    Tietovarasto.getInstance().PoistaTavara(poistettava.getLuettelo_id());
+    SQLVarasto.getInstance().PoistaTavara(poistettava.getLuettelo_id());
     PaivitaValintalista();
     
 }
 private void Taytatiedot(){
             
-             Tavaralisays poistettava=(Tavaralisays)tuotteetc.getSelectedItem();
-             if(poistettava==null) return;
-               tuotenimi.setText(poistettava.toString());
-               vari.setText(poistettava.getVari());
-                    puulaji.setText(poistettava.getPuulaji());
-                    masto.setText(poistettava.getMastomahdollisuus());
-                    ihmismaara.setText(poistettava.getSoutajapaikkojenmaara());
-                    tilausnumero.setText(poistettava.getTuotteentilausnumero());
-                    venetyyppi.setText(poistettava.getVenetyyppi());
-                    lahtohinta.setText(poistettava.getLahtohinta());              
+             Tavaralisays taytettava=(Tavaralisays)tuotenimicombo.getSelectedItem();
+             if(taytettava==null) return;
+               tuotenimi.setText(taytettava.toString());
+               vari.setText(taytettava.getVari());
+                    puulaji.setText(taytettava.getPuulaji());
+                    masto.setText(taytettava.getMastomahdollisuus());
+                    ihmismaara.setText(taytettava.getSoutajapaikkojenmaara());
+                    tilausnumero.setText(taytettava.getTuotteentilausnumero());
+                    venetyyppi.setText(taytettava.getVenetyyppi());
+                    lahtohinta.setText(taytettava.getLahtohinta());              
         }
 private void PaivitaValintalista() throws SQLException{
    

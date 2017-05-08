@@ -2,10 +2,13 @@
 package Mainwindow;
 
 import Rekisteri.Security;
-import Tietokantayhteys.YhteydenOtto;
+import Tietokantayhteys.YhteydenLuonti;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,13 +20,13 @@ import javax.imageio.ImageIO;
 import jbcrypt.BCrypt;
 import javax.swing.JButton;
 
-public class Tietovarasto {
+public class SQLVarasto {
     
     //jotain ihme gettereitä *****************
-    private static Tietovarasto instance;
-    public static Tietovarasto getInstance(){
+    private static SQLVarasto instance;
+    public static SQLVarasto getInstance(){
         if(instance == null)
-            instance = new Tietovarasto();
+            instance = new SQLVarasto();
         return instance;
     }
     public int ids;
@@ -49,7 +52,7 @@ public class Tietovarasto {
     }
     // getterit loppuu ****************************
      public boolean lisaaHenkiloita(String kayttajatunnus, String salasana, String sahkoposti) throws SQLException {
-        Connection yhteys = YhteydenOtto.avaaYhteys();
+        Connection yhteys = YhteydenLuonti.avaaYhteys();
        
         Security s = new Security();
         String hashsalasana = s.hashPassword(salasana);
@@ -61,11 +64,11 @@ public class Tietovarasto {
         
         try { 
 
-            String lisaaSql
+            String sqllisayslause
                     = 
                     "insert into kayttaja(Kayttajatunnus,Salasana,Sahkoposti) values(?,?,?)";
             
-            lisayslause = yhteys.prepareStatement(lisaaSql);
+            lisayslause = yhteys.prepareStatement(sqllisayslause);
 
             lisayslause.setString(1, kayttajatunnus);
             lisayslause.setString(2, hashsalasana);
@@ -77,7 +80,7 @@ public class Tietovarasto {
             e.printStackTrace();
             return false;
         } finally {
-            YhteydenOtto.suljeYhteys(yhteys);
+            YhteydenLuonti.suljeYhteys(yhteys);
             lisayslause.close();
             
         }
@@ -88,13 +91,13 @@ public class Tietovarasto {
 
  
     public int checkUser(String Kayttajanimi, String Salasana) throws SQLException {
-        Connection yhteys = YhteydenOtto.avaaYhteys();
+        Connection yhteys = YhteydenLuonti.avaaYhteys();
         try {
 
-            String sql = "SELECT Kayttajatunnus, Salasana, kayttaja_id FROM kayttaja WHERE Kayttajatunnus=?";
+            String sqlhakulause = "SELECT Kayttajatunnus, Salasana, kayttaja_id FROM kayttaja WHERE Kayttajatunnus=?";
 
             ResultSet rs = null;
-            PreparedStatement pstmt = yhteys.prepareStatement(sql);
+            PreparedStatement pstmt = yhteys.prepareStatement(sqlhakulause);
             pstmt.setString(1, Kayttajanimi);
             
             rs = pstmt.executeQuery();
@@ -120,23 +123,23 @@ public class Tietovarasto {
             ex.printStackTrace();
 
         } finally {
-            YhteydenOtto.suljeYhteys(yhteys);
+            YhteydenLuonti.suljeYhteys(yhteys);
 
         }
         return -1;
     }
     public void lisaaAsiakas(int ids, Asiakashenkilo henkilo) throws SQLException{
          
-        Connection yhteys = YhteydenOtto.avaaYhteys();
+        Connection yhteys = YhteydenLuonti.avaaYhteys();
        PreparedStatement lisayslause = null;
        
        
        
        try{
-         ids =Tietovarasto.getInstance().getIds();                                                                                  //arvo  1,2,3,4,5,6,7                    //8    
+         ids =SQLVarasto.getInstance().getIds();                                                                                  //arvo  1,2,3,4,5,6,7                    //8    
        
-       String SLause = "update kayttaja set Nimi = ?, Sukunimi = ?, Puhelinnumero = ?, Maa = ?, Katuosoite = ?, Postitoimipaikka = ?, Postinumero = ? where kayttaja_id = ? ";
-       lisayslause = yhteys.prepareStatement(SLause);
+       String sqlpaivityslause = "update kayttaja set Nimi = ?, Sukunimi = ?, Puhelinnumero = ?, Maa = ?, Katuosoite = ?, Postitoimipaikka = ?, Postinumero = ? where kayttaja_id = ? ";
+       lisayslause = yhteys.prepareStatement(sqlpaivityslause);
        
        lisayslause.setString(1, henkilo.getNimi());
        lisayslause.setString(2, henkilo.getSukunimi());
@@ -152,7 +155,7 @@ public class Tietovarasto {
            System.out.println("asiakas insertti lause on perseestä");
           ex.printStackTrace();
        }finally{
-           YhteydenOtto.suljeYhteys(yhteys);
+           YhteydenLuonti.suljeYhteys(yhteys);
            
        }
        
@@ -160,9 +163,9 @@ public class Tietovarasto {
         
     }
     //TUOTELUETTELON SQL KAMAT*************************************
-    public void Lisaakuva(File file) throws SQLException{
+    public void Lisaakuva(File file, int luettelo_id) throws SQLException{
         
-     Connection yhteys = YhteydenOtto.avaaYhteys();
+     Connection yhteys = YhteydenLuonti.avaaYhteys();
      
      PreparedStatement pst = null;
      
@@ -174,7 +177,7 @@ public class Tietovarasto {
             String lisaakuva = ("update tuoteluettelo set Kuva = ? where luettelo_id = ?");
            pst = yhteys.prepareStatement(lisaakuva);
             pst.setBlob(1, blFile);
-            pst.setInt(2, 26);
+            pst.setInt(2, luettelo_id);
             pst.execute();
         }catch(Exception ex){
            ex.printStackTrace();
@@ -184,30 +187,63 @@ public class Tietovarasto {
         }
     
 }
-            
-    public void Lisaatavarat (JButton button, Tavaralisays tieto ) throws SQLException{
-        Connection yhteys = YhteydenOtto.avaaYhteys();
+    public void Haekuva(int luettelo_id, String filename) throws SQLException{
+       Connection yhteys = YhteydenLuonti.avaaYhteys();
+       PreparedStatement pstmt = null;
+       ResultSet rs = null;
+       
         
-        PreparedStatement pst = null;
+        try{ 
+            String haekuva = ("SELECT Kuva from tuoteluettelo WHERE Kuva = ? AND luettelo_id = ?");
+            pstmt = yhteys.prepareStatement(haekuva);
+            pstmt.setInt(1, luettelo_id);
+            pstmt.setString(tuote_ids, haekuva);
+            rs = pstmt.executeQuery();
+            
+            File file = new File(filename);
+            FileOutputStream output = new FileOutputStream(file);
+            System.out.println("Writing to file... "+ file.getAbsolutePath());
+            while(rs.next()){
+               InputStream input = rs.getBinaryStream("Kuva");
+               byte[] buffer = new byte[1024];
+               while(input.read(buffer) > 0){
+                   output.write(buffer);
+               }
+            }
+            
+            
+        }catch(SQLException | IOException ex){
+            System.out.println(ex.getMessage());
+        }finally{
+         YhteydenLuonti.suljeYhteys(yhteys);
+         pstmt.close();
+         rs.close();
+        }
+    }
+            
+    public void Lisaatavara(JButton button, Tavaralisays tieto ) throws SQLException{
+        Connection yhteys = YhteydenLuonti.avaaYhteys();
+        
+        PreparedStatement pstmt = null;
         
        
         
         try{ 
                                                                                                                                                                                 //1,2,3,4,5,6,7,8
-            String lisaasql = "Insert into tuoteluettelo(Lahtohinta,Mastomahdollisuus,Puulaji,Soutajapaikkojenmaara,Tuotenimi,Tuotteentilausnumero,Vari,Venetyyppi,) values(?,?,?,?,?,?,?,?)";
-        pst = yhteys.prepareStatement(lisaasql);
+            String sqllisayslause = "Insert into tuoteluettelo(Lahtohinta,Mastomahdollisuus,Puulaji,Soutajapaikkojenmaara,Tuotenimi,Tuotteentilausnumero,Vari,Venetyyppi,) values(?,?,?,?,?,?,?,?)";
+        pstmt = yhteys.prepareStatement(sqllisayslause);
         
-        pst.setString(1, tieto.getLahtohinta());
-        pst.setString(2, tieto.getMastomahdollisuus());
-        pst.setString(3, tieto.getPuulaji());
-        pst.setString(4, tieto.getSoutajapaikkojenmaara());
-        pst.setString(5, tieto.getTuotenimi());
-        pst.setString(6, tieto.getTuotteentilausnumero());
-        pst.setString(7, tieto.getVari());
-        pst.setString(8, tieto.getVenetyyppi());
+        pstmt.setString(1, tieto.getLahtohinta());
+        pstmt.setString(2, tieto.getMastomahdollisuus());
+        pstmt.setString(3, tieto.getPuulaji());
+        pstmt.setString(4, tieto.getSoutajapaikkojenmaara());
+        pstmt.setString(5, tieto.getTuotenimi());
+        pstmt.setString(6, tieto.getTuotteentilausnumero());
+        pstmt.setString(7, tieto.getVari());
+        pstmt.setString(8, tieto.getVenetyyppi());
         
         
-        int rowsAffected = pst.executeUpdate();
+        int rowsAffected = pstmt.executeUpdate();
         
         
         }catch(Exception ex){
@@ -216,20 +252,22 @@ public class Tietovarasto {
             ex.printStackTrace();
             
         }finally{
-            YhteydenOtto.suljeYhteys(yhteys);
+            YhteydenLuonti.suljeYhteys(yhteys);
         }
             
     }
+    
+    //ei käytetä missään vaiheessa muistaakseeni
     public void Haetavarat () throws SQLException{
         
-        Connection yhteys = YhteydenOtto.avaaYhteys();
+        Connection yhteys = YhteydenLuonti.avaaYhteys();
         
         PreparedStatement pst = null;
         
         
         try{
-            String slause = "SELECT luettelo_id, Tuotenimi, Tuotteentilausnumero, Venetyyppi, Soutajapaikkojenmaara, Puulaji, Vari, Mastomahdollisuus, Lahtohinta FROM tuoteluettelo";
-            pst = yhteys.prepareStatement(slause);
+            String sqlhakulause = "SELECT luettelo_id, Tuotenimi, Tuotteentilausnumero, Venetyyppi, Soutajapaikkojenmaara, Puulaji, Vari, Mastomahdollisuus, Lahtohinta FROM tuoteluettelo";
+            pst = yhteys.prepareStatement(sqlhakulause);
             Tavaralisays tavara = Tavaralisays.getInstance();
             ResultSet rs = pst.executeQuery();
            
@@ -260,14 +298,14 @@ public class Tietovarasto {
     }
     public List<Tavaralisays> Haekaikkitavarat() throws SQLException{
         List<Tavaralisays> tavaratlista = new ArrayList<Tavaralisays>();
-        Connection yhteys = YhteydenOtto.avaaYhteys();
+        Connection yhteys = YhteydenLuonti.avaaYhteys();
         if(yhteys != null){
-            PreparedStatement  stmt= null;
+            PreparedStatement  pstmt= null;
             ResultSet rs = null;
             try{
-                String sqllause = "SELECT luettelo_id, Tuotenimi, Tuotteentilausnumero, Venetyyppi, Soutajapaikkojenmaara, Puulaji,Vari,Mastomahdollisuus,Lahtohinta FROM tuoteluettelo";
-                stmt = yhteys.prepareStatement(sqllause);
-                rs = stmt.executeQuery();
+                String sqlhakulause = "SELECT luettelo_id, Tuotenimi, Tuotteentilausnumero, Venetyyppi, Soutajapaikkojenmaara, Puulaji,Vari,Mastomahdollisuus,Lahtohinta FROM tuoteluettelo";
+                pstmt = yhteys.prepareStatement(sqlhakulause);
+                rs = pstmt.executeQuery();
                 
                 while(rs.next()){    
                     Tavaralisays apulisays = new Tavaralisays(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9));//paikkamäärä
@@ -279,9 +317,9 @@ public class Tietovarasto {
             
         }finally{
                 
-                stmt.close();
+                pstmt.close();
                 rs.close();
-                YhteydenOtto.suljeYhteys(yhteys);
+                YhteydenLuonti.suljeYhteys(yhteys);
             }
         
         }
@@ -289,8 +327,8 @@ public class Tietovarasto {
     
     return tavaratlista;
 }
-    public void Pavita(int tuoteid, Tavaralisays tavara) throws SQLException{
-        Connection yhteys = YhteydenOtto.avaaYhteys();
+    public void PaivitaTuote(int tuoteid, Tavaralisays tavara) throws SQLException{
+        Connection yhteys = YhteydenLuonti.avaaYhteys();
         
        
         PreparedStatement stmt = null;
@@ -314,11 +352,11 @@ public class Tietovarasto {
             
         }finally{
             stmt.close();
-            YhteydenOtto.suljeYhteys(yhteys);
+            YhteydenLuonti.suljeYhteys(yhteys);
         }
     }
   public void PoistaTavara(int luettelo_id) throws SQLException{
-      Connection yhteys = YhteydenOtto.avaaYhteys();
+      Connection yhteys = YhteydenLuonti.avaaYhteys();
       
       if(yhteys == null){
           return;
@@ -335,7 +373,7 @@ public class Tietovarasto {
               
           }finally{
               stmt.close();
-              YhteydenOtto.suljeYhteys(yhteys);
+              YhteydenLuonti.suljeYhteys(yhteys);
           }
   }
     

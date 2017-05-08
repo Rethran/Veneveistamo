@@ -3,7 +3,7 @@ package Mainwindow;
 
 
 
-import Kokeilutestaus.Kokeilutestaus;
+import Kirjautumisikkuna.Kirjautumisikkuna;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -32,12 +32,12 @@ import java.util.logging.Logger;
    private final JButton Veneveistamoyritys;
    private final JButton Asiakas;
    private JButton alihankkijat;
-   private Tietovarasto varasto;
+   private SQLVarasto varasto;
     public Paaikkuna(){
         
         
         //pääikkunan luonti *********************"toimii"
-        varasto = Tietovarasto.getInstance();
+        varasto = SQLVarasto.getInstance();
         paaikkuna = new JFrame("MainWindow");
         paaikkuna.setSize(400,400);
         paaikkuna.setLayout(null);
@@ -109,9 +109,9 @@ import java.util.logging.Logger;
         logout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Kokeilutestaus k = new Kokeilutestaus();
+                Kirjautumisikkuna k = new Kirjautumisikkuna();
                 paaikkuna.setVisible(false);
-                k.testailua.setVisible(true);
+                k.kirjautumispohja.setVisible(true);
                 
             }
             
@@ -130,7 +130,7 @@ import java.util.logging.Logger;
                 
               Asiakas a = new Asiakas();
               
-              a.ali.setVisible(true);
+              a.asiakasikkuna.setVisible(true);
               paaikkuna.setVisible(false);
             }
             
