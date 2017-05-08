@@ -21,6 +21,7 @@ public class Tilaus extends JPanel {
     private JLabel hintalabeli;
     private JButton poistu;
     private JLabel kuva;
+   
     
     public Tilaus(){
         //**********************tekeminen
@@ -70,10 +71,11 @@ public class Tilaus extends JPanel {
                
             }
         });
-        
-        ImageIcon icon = new ImageIcon("Kuvat/kaleeri.png");
-        
-        kuva.setIcon(icon);
+       
+               
+      
+       
 }
+   
     
 }

@@ -2,7 +2,7 @@ package Tietokantayhteys;
 
 import java.sql.*;
 
-public class YhteydenOtto {
+public class YhteydenLuonti {
 
     Connection connection = null;
 
@@ -21,7 +21,9 @@ public class YhteydenOtto {
 
         return null;
     }
-
+    
+    
+    //MUISTA POISTAA SITTEN KUN SAAT VALMIIKSI
     public boolean yhteydenKokeilu() {
         try {
             connection = DriverManager.getConnection(url, user, password);
