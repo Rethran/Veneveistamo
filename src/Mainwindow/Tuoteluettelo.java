@@ -158,7 +158,7 @@ public class Tuoteluettelo extends JPanel {
         etsitiedosto.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JFileChooser chooser = new JFileChooser("\\kuvat");
+            JFileChooser chooser = new JFileChooser("C:\\Users\\s1500643\\Desktop\\veneveistamo\\kuvat");
      FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG", "JPG");
      chooser.setFileFilter(filter);
      int status = chooser.showOpenDialog(null);
@@ -168,6 +168,7 @@ public class Tuoteluettelo extends JPanel {
              return;
          }
          String filename = chooser.getSelectedFile().getAbsolutePath();
+         System.out.println("Kansio: "+filename);
          sourceFile = new File(filename);
          tiedostoteksti.setText(filename);
          

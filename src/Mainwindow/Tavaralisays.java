@@ -5,6 +5,8 @@
 
 package Mainwindow;
 
+import java.sql.Blob;
+
 
 public class Tavaralisays {
     
@@ -16,9 +18,9 @@ public class Tavaralisays {
     private String Tuotteentilausnumero;
     private String Vari;
     private String Venetyyppi;
-    private String Kuva;
+    private Blob Kuva;
 
-    public String getKuva() {
+    public Blob getKuva() {
         return Kuva;
     }
     private int luettelo_id;
