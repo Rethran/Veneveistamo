@@ -4,13 +4,8 @@ import Rekisteri.Security;
 import Tietokantayhteys.YhteydenLuonti;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -61,8 +56,8 @@ public class SQLVarasto {
     public boolean lisaaHenkiloita(String kayttajatunnus, String salasana, String sahkoposti) throws SQLException {
         Connection yhteys = YhteydenLuonti.avaaYhteys();
 
-        Security s = new Security();
-        String hashsalasana = s.hashPassword(salasana);
+        Security security = new Security();
+        String hashsalasana = security.hashPassword(salasana);
 
         if (yhteys == null) {
             return false;
@@ -99,26 +94,28 @@ public class SQLVarasto {
 
             String sqlhakulause = "SELECT Kayttajatunnus, Salasana, kayttaja_id FROM kayttaja WHERE Kayttajatunnus=?";
 
-            ResultSet rs = null;
+            ResultSet resultset = null;
             PreparedStatement pstmt = yhteys.prepareStatement(sqlhakulause);
             pstmt.setString(1, Kayttajanimi);
 
-            rs = pstmt.executeQuery();
+            resultset = pstmt.executeQuery();
 
-            if (rs.next()) {
-                String password = rs.getString("Salasana");
+            if (resultset.next()) {
+                String password = resultset.getString("Salasana");
 
                 if (BCrypt.checkpw(Salasana, password)) {
-                    int ids = rs.getInt("kayttaja_id");
-                    // ota myös id
+                    int ids = resultset.getInt("kayttaja_id");
+                    // ota myös id 
                     return ids;
-                    // palauta id
+                    // palauta id aka olet päässyt järjestelmään sisään.
                 } else {
-                    // palauta -1
+                    // palauta -1 eli jos riviä ei ole olemassa
+                    
                     return -1;
                 }
 
             } else {
+                //et pääse sisään
                 return -1;
             }
 
@@ -168,22 +165,22 @@ public class SQLVarasto {
 
         Connection yhteys = YhteydenLuonti.avaaYhteys();
 
-        PreparedStatement pst = null;
+        PreparedStatement pstmt = null;
 
         try {
-            BufferedImage img = ImageIO.read(file);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(img, "jpg", baos);
-            Blob blFile = new javax.sql.rowset.serial.SerialBlob(baos.toByteArray());
+            BufferedImage bufferedimage = ImageIO.read(file);
+            ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
+            ImageIO.write(bufferedimage, "jpg", bytearrayoutputstream);
+            Blob blFile = new javax.sql.rowset.serial.SerialBlob(bytearrayoutputstream.toByteArray());
             String lisaakuva = ("update tuoteluettelo set Kuva = ? where luettelo_id = ?");
-            pst = yhteys.prepareStatement(lisaakuva);
-            pst.setBlob(1, blFile);
-            pst.setInt(2, luettelo_id);
-            pst.execute();
+            pstmt = yhteys.prepareStatement(lisaakuva);
+            pstmt.setBlob(1, blFile);
+            pstmt.setInt(2, luettelo_id);
+            pstmt.execute();
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            pst.close();
+            pstmt.close();
             yhteys.close();
         }
 
@@ -192,7 +189,7 @@ public class SQLVarasto {
     public void Haekuva(int luettelo_id, JLabel label) throws Exception {
         Connection yhteys = YhteydenLuonti.avaaYhteys();
         PreparedStatement pstmt = null;
-        ResultSet rs = null;
+        ResultSet resultset = null;
        
         
         
@@ -202,12 +199,12 @@ public class SQLVarasto {
             String haekuva = ("SELECT Kuva from tuoteluettelo WHERE luettelo_id = ?");
             pstmt = yhteys.prepareStatement(haekuva);
             pstmt.setInt(1, luettelo_id);
-            rs = pstmt.executeQuery();
-            while(rs.next()){
-              byte[] img = rs.getBytes("Kuva");
-              ImageIcon image = new ImageIcon(img);
-              Image im = image.getImage();
-              Image myimage = im.getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
+            resultset = pstmt.executeQuery();
+            while(resultset.next()){
+              byte[] bytekuva = resultset.getBytes("Kuva");
+              ImageIcon image = new ImageIcon(bytekuva);
+              Image haeimage = image.getImage();
+              Image myimage = haeimage.getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
               ImageIcon newimage = new ImageIcon(myimage);
               label.setIcon(newimage);
                
@@ -217,7 +214,7 @@ public class SQLVarasto {
         } finally {
             YhteydenLuonti.suljeYhteys(yhteys);
             pstmt.close();
-            rs.close();
+            resultset.close();
         }
        
        
@@ -255,40 +252,7 @@ public class SQLVarasto {
 
     }
 
-    //ei käytetä missään vaiheessa muistaakseeni
-    public void Haetavarat(Tavaralisays tavara) throws SQLException {
-
-        Connection yhteys = YhteydenLuonti.avaaYhteys();
-
-        PreparedStatement pst = null;
-
-        try {
-            String sqlhakulause = "SELECT luettelo_id, Tuotenimi, Tuotteentilausnumero, Venetyyppi, Soutajapaikkojenmaara, Puulaji, Vari, Mastomahdollisuus, Lahtohinta FROM tuoteluettelo";
-            pst = yhteys.prepareStatement(sqlhakulause);
-            
-            ResultSet rs = pst.executeQuery();
-
-            while (rs.next()) {
-                tavara.setTuotenimi(rs.getString("Tuotenimi"));
-                tavara.setTuotteentilausnumero(rs.getString("Tuotteentilausnumero"));
-                tavara.setVenetyyppi(rs.getString("Venetyyppi"));
-                tavara.setSoutajapaikkojenmaara(rs.getString("Soutajapaikkojenmaara"));
-                tavara.setPuulaji(rs.getString("Puulaji"));
-                tavara.setVari(rs.getString("Vari"));
-                tavara.setMastomahdollisuus(rs.getString("Mastomahdollisuus"));
-                tavara.setLahtohinta(rs.getString("Lahtohinta"));
-                tavara.setLuettelo_id(rs.getInt("luettelo_id"));
-
-            }
-
-        } catch (Exception ex) {
-            System.out.println("tuoteluettelo select ei toimi");
-            ex.printStackTrace();
-        } finally {
-            yhteys.close();
-
-        }
-    }
+    
 
     public List<Tavaralisays> Haekaikkitavarat() throws SQLException {
         List<Tavaralisays> tavaratlista = new ArrayList<Tavaralisays>();
@@ -370,6 +334,31 @@ public class SQLVarasto {
             YhteydenLuonti.suljeYhteys(yhteys);
         }
     }
-
+    
     //Tuoteluetteon sql kamat loppuu ************************************************
+    public void TeeTilaus(int luettelo_id, int ids, Tavaralisays tavara) throws SQLException{
+        Connection yhteys = YhteydenLuonti.avaaYhteys();
+       
+        
+        if(yhteys == null){
+            return;
+        }
+        PreparedStatement stmt = null;
+        try{
+            String inserttilaus = "INSERT INTO kayttajatuoteluettelo(Asiakas_id, Tuote_id, Tilauksenhinta) Values(?,?,?)";
+            stmt = yhteys.prepareStatement(inserttilaus);
+            System.out.println("ids:"+ ids +"; Luotteolo_id:"+ luettelo_id +"; hinta: " +tavara.getLahtohinta() );
+            stmt.setInt(1, ids);
+            stmt.setInt(2, luettelo_id);
+            stmt.setString(3, tavara.getLahtohinta());
+            stmt.executeUpdate();
+            
+        }catch(Exception ex){
+            ex.printStackTrace();
+           
+        }finally{
+            stmt.close();
+            YhteydenLuonti.suljeYhteys(yhteys);
+        }
+    }
 }

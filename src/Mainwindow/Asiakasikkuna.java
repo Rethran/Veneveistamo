@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 
 
 
-public class Asiakas extends JPanel{
+public class Asiakasikkuna extends JPanel{
     public JFrame asiakasikkuna = new JFrame("Asiakas");
     
     private JLabel nimi = new JLabel("Nimi");
@@ -36,7 +36,7 @@ public class Asiakas extends JPanel{
      Paaikkuna paaikkunapohja = new Paaikkuna();
     
     //shhhhhhhhhHhhhhhhh 
-    public Asiakas(){
+    public Asiakasikkuna(){
         //**********************tietoikkunan tekeminen
         asiakasikkuna.setAlwaysOnTop(true);
         asiakasikkuna.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -100,22 +100,18 @@ public class Asiakas extends JPanel{
             public void actionPerformed(ActionEvent e) {
                
                 
-               SQLVarasto t = new SQLVarasto();
-
-              
-              
-               
-               
+               SQLVarasto sqlvarasto = new SQLVarasto();
+          
                 try {
-                    t.lisaaAsiakas(t.getIds(), new Asiakashenkilo(nimiT.getText(),sukunimiT.getText(),puhelinnumeroT.getText(),maaT.getText(),katuosoiteT.getText(),postitoimipaikkaT.getText(),postinumeroT.getText()));
+                    sqlvarasto.lisaaAsiakas(sqlvarasto.getIds(), new Asiakashenkilo(nimiT.getText(),sukunimiT.getText(),puhelinnumeroT.getText(),maaT.getText(),katuosoiteT.getText(),postitoimipaikkaT.getText(),postinumeroT.getText()));
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
                 
                 
-                Paaikkuna p = new Paaikkuna();
+                Paaikkuna paaikkunapohja = new Paaikkuna();
                 asiakasikkuna.setVisible(false);
-                p.paaikkuna.setVisible(true);
+                paaikkunapohja.paaikkuna.setVisible(true);
             }
             
         });
