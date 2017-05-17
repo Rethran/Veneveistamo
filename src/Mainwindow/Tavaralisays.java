@@ -37,6 +37,10 @@ public class Tavaralisays {
         this.luettelo_id = luettelo_id;
     }
 
+    public Tavaralisays(String Lahtohinta) {
+        this.Lahtohinta = Lahtohinta;
+    }
+
     
     private static Tavaralisays tavaratinstance;
     public static Tavaralisays getInstance(){
@@ -47,7 +51,7 @@ public class Tavaralisays {
 
     
     public int getLuettelo_id(){
-        
+        System.out.println("ootko sinä kiva:"+ luettelo_id);
         return luettelo_id;
     }
     public void setLuettelo_id(int luettelo_ids){
@@ -99,6 +103,7 @@ public class Tavaralisays {
         this.Tuotteentilausnumero = Tuotteentilausnumero;
         this.Vari = Vari;
         this.Venetyyppi = Venetyyppi;
+        
     }
 
     @Override
@@ -106,10 +111,6 @@ public class Tavaralisays {
         return  Tuotenimi;
     }
 
-    
-    
-    
-    
     public void setLahtohinta(String Lahtohinta) {
         this.Lahtohinta = Lahtohinta;
     }

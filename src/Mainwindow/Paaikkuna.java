@@ -12,7 +12,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import Mainwindow.Tuoteluettelo;
+import Mainwindow.Tuoteluetteloikkuna;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -88,7 +88,7 @@ import java.util.logging.Logger;
             public void actionPerformed(ActionEvent e) {
                 
                 try {
-                    Tuoteluettelo t = new Tuoteluettelo(varasto);
+                    Tuoteluetteloikkuna t = new Tuoteluetteloikkuna(varasto);
                     t.tuotteet.setVisible(true);
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -100,9 +100,14 @@ import java.util.logging.Logger;
         Tilaus.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Tilaus t = new Tilaus();
+                try{
+                     Tilausikkuna t = new Tilausikkuna(varasto);
                 paaikkuna.setVisible(false);
                 t.tilausikkuna.setVisible(true);
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
+               
             }
         });
         
@@ -128,7 +133,7 @@ import java.util.logging.Logger;
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-              Asiakas a = new Asiakas();
+              Asiakasikkuna a = new Asiakasikkuna();
               
               a.asiakasikkuna.setVisible(true);
               paaikkuna.setVisible(false);
