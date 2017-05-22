@@ -24,7 +24,6 @@ public class Kirjautumisikkuna extends JPanel {
     private JButton kirjautumisnappula;
     private JTextField nimiT;
     private JTextField salasanaT;
-    private JButton yhteyskokeilu;
     private JButton rekisterointi;
     public JFrame kirjautumispohja;
     
@@ -44,7 +43,7 @@ public class Kirjautumisikkuna extends JPanel {
         nimil = new JLabel("Name:");
         salasanal = new JLabel("Password:");
         kirjautumisnappula = new JButton("Log in");
-        yhteyskokeilu = new JButton("testaa yhteys");
+       
         nimiT = new JTextField(15);
         salasanaT = new JPasswordField(20);
         rekisterointi = new JButton("Register");
@@ -55,22 +54,21 @@ public class Kirjautumisikkuna extends JPanel {
         
 
        
-        //asettelu boundeilla (kokeilu )
+        
         nimil.setBounds(45, 45, 100, 25);
         salasanal.setBounds(20, 70, 100, 25);
         kirjautumisnappula.setBounds(45, 120, 130, 25);
         rekisterointi.setBounds(180, 120, 130, 25);
         nimiT.setBounds(90, 45, 170, 25);
         salasanaT.setBounds(90, 70, 170, 25);
-        yhteyskokeilu.setBounds(360, 140, 40, 20);
+      
 
-        //komponentit
+       
         kirjautumispohja.add(nimil);
         kirjautumispohja.add(salasanal);
         kirjautumispohja.add(kirjautumisnappula);
         kirjautumispohja.add(nimiT);
         kirjautumispohja.add(salasanaT);
-        kirjautumispohja.add(yhteyskokeilu);
         kirjautumispohja.add(rekisterointi);
         
 
@@ -90,7 +88,7 @@ public class Kirjautumisikkuna extends JPanel {
                     int ids = SQLVarasto.getInstance().checkUser(Nimi, Salasana);
                     if (ids != -1) {
                         SQLVarasto.getInstance().setids(ids);
-                        System.out.println("toimii");
+                        
                        
                         p.paaikkuna.setVisible(true);
                         kirjautumispohja.setVisible(false);
@@ -131,17 +129,7 @@ public class Kirjautumisikkuna extends JPanel {
         {
 
         }
-        yhteyskokeilu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-               
-               
-                p.paaikkuna.setVisible(true);
-                 kirjautumispohja.setVisible(false);
-
-            }
-        });
+       
         {
 
         }

@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import jbcrypt.BCrypt;
@@ -74,14 +77,14 @@ public class SQLVarasto {
             lisayslause.setString(1, kayttajatunnus);
             lisayslause.setString(2, hashsalasana);
             lisayslause.setString(3, sahkoposti);
-            int rowsAffected = lisayslause.executeUpdate();
+            lisayslause.executeUpdate();
 
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         } finally {
-            YhteydenLuonti.suljeYhteys(yhteys);
+            YhteydenLuonti.SuljeYhteys(yhteys);
             lisayslause.close();
 
         }
@@ -115,7 +118,7 @@ public class SQLVarasto {
                 }
 
             } else {
-                //et pääse sisään
+                //et pääse sisään, koska riviä ei ole olemassa
                 return -1;
             }
 
@@ -123,7 +126,7 @@ public class SQLVarasto {
             ex.printStackTrace();
 
         } finally {
-            YhteydenLuonti.suljeYhteys(yhteys);
+            YhteydenLuonti.SuljeYhteys(yhteys);
 
         }
         return -1;
@@ -148,13 +151,13 @@ public class SQLVarasto {
             lisayslause.setString(6, henkilo.getPostitoimipaikka());
             lisayslause.setString(7, henkilo.getPostinumero());
             lisayslause.setInt(8, ids);
-            int rowsAffected = lisayslause.executeUpdate();
-            System.out.println(+ids);
+           lisayslause.executeUpdate();
+            
         } catch (Exception ex) {
-            System.out.println("asiakas insertti lause on perseestä");
+            System.out.println("Customer insert wont work!!");
             ex.printStackTrace();
         } finally {
-            YhteydenLuonti.suljeYhteys(yhteys);
+            YhteydenLuonti.SuljeYhteys(yhteys);
 
         }
 
@@ -162,22 +165,29 @@ public class SQLVarasto {
 
     //TUOTELUETTELON SQL KAMAT*************************************
     public void Lisaakuva(File file, int luettelo_id) throws SQLException {
-
+        
         Connection yhteys = YhteydenLuonti.avaaYhteys();
 
         PreparedStatement pstmt = null;
 
         try {
+           
             BufferedImage bufferedimage = ImageIO.read(file);
+             
+            
             ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
+            
             ImageIO.write(bufferedimage, "jpg", bytearrayoutputstream);
             Blob blFile = new javax.sql.rowset.serial.SerialBlob(bytearrayoutputstream.toByteArray());
+            
             String lisaakuva = ("update tuoteluettelo set Kuva = ? where luettelo_id = ?");
+           
             pstmt = yhteys.prepareStatement(lisaakuva);
             pstmt.setBlob(1, blFile);
             pstmt.setInt(2, luettelo_id);
-            pstmt.execute();
-        } catch (Exception ex) {
+            pstmt.executeUpdate();
+           
+        } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
             pstmt.close();
@@ -200,19 +210,30 @@ public class SQLVarasto {
             pstmt = yhteys.prepareStatement(haekuva);
             pstmt.setInt(1, luettelo_id);
             resultset = pstmt.executeQuery();
+            
             while(resultset.next()){
+               
               byte[] bytekuva = resultset.getBytes("Kuva");
+             if(bytekuva == null){
+                 label.setVisible(false);
+             }else{
               ImageIcon image = new ImageIcon(bytekuva);
               Image haeimage = image.getImage();
+             
               Image myimage = haeimage.getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
+          
               ImageIcon newimage = new ImageIcon(myimage);
-              label.setIcon(newimage);
+              label.setVisible(true);
+               label.setIcon(newimage);
+              
                
+             }
+            
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         } finally {
-            YhteydenLuonti.suljeYhteys(yhteys);
+            YhteydenLuonti.SuljeYhteys(yhteys);
             pstmt.close();
             resultset.close();
         }
@@ -226,8 +247,8 @@ public class SQLVarasto {
         PreparedStatement pstmt = null;
 
         try {
-            //1,2,3,4,5,6,7,8
-            String sqllisayslause = "Insert into tuoteluettelo(Lahtohinta,Mastomahdollisuus,Puulaji,Soutajapaikkojenmaara,Tuotenimi,Tuotteentilausnumero,Vari,Venetyyppi,) values(?,?,?,?,?,?,?,?)";
+            
+            String sqllisayslause = "Insert into tuoteluettelo(Lahtohinta,Mastomahdollisuus,Puulaji,Soutajapaikkojenmaara,Tuotenimi,Tuotteentilausnumero,Vari,Venetyyppi) values(?,?,?,?,?,?,?,?)";
             pstmt = yhteys.prepareStatement(sqllisayslause);
 
             pstmt.setString(1, tieto.getLahtohinta());
@@ -238,8 +259,7 @@ public class SQLVarasto {
             pstmt.setString(6, tieto.getTuotteentilausnumero());
             pstmt.setString(7, tieto.getVari());
             pstmt.setString(8, tieto.getVenetyyppi());
-
-            int rowsAffected = pstmt.executeUpdate();
+            pstmt.execute();
 
         } catch (Exception ex) {
 
@@ -247,7 +267,7 @@ public class SQLVarasto {
             ex.printStackTrace();
 
         } finally {
-            YhteydenLuonti.suljeYhteys(yhteys);
+            YhteydenLuonti.SuljeYhteys(yhteys);
         }
 
     }
@@ -277,7 +297,7 @@ public class SQLVarasto {
 
                 pstmt.close();
                 rs.close();
-                YhteydenLuonti.suljeYhteys(yhteys);
+                YhteydenLuonti.SuljeYhteys(yhteys);
             }
 
         }
@@ -302,14 +322,14 @@ public class SQLVarasto {
             stmt.setString(7, tavara.getMastomahdollisuus());
             stmt.setString(8, tavara.getLahtohinta());
             stmt.setInt(9, tuoteid);
-            int rowsaffected = stmt.executeUpdate();
+            stmt.executeUpdate();
 
         } catch (Exception ex) {
             ex.printStackTrace();
 
         } finally {
             stmt.close();
-            YhteydenLuonti.suljeYhteys(yhteys);
+            YhteydenLuonti.SuljeYhteys(yhteys);
         }
     }
 
@@ -331,7 +351,7 @@ public class SQLVarasto {
 
         } finally {
             stmt.close();
-            YhteydenLuonti.suljeYhteys(yhteys);
+            YhteydenLuonti.SuljeYhteys(yhteys);
         }
     }
     
@@ -347,7 +367,6 @@ public class SQLVarasto {
         try{
             String inserttilaus = "INSERT INTO kayttajatuoteluettelo(Asiakas_id, Tuote_id, Tilauksenhinta) Values(?,?,?)";
             stmt = yhteys.prepareStatement(inserttilaus);
-            System.out.println("ids:"+ ids +"; Luotteolo_id:"+ luettelo_id +"; hinta: " +tavara.getLahtohinta() );
             stmt.setInt(1, ids);
             stmt.setInt(2, luettelo_id);
             stmt.setString(3, tavara.getLahtohinta());
@@ -358,7 +377,7 @@ public class SQLVarasto {
            
         }finally{
             stmt.close();
-            YhteydenLuonti.suljeYhteys(yhteys);
+            YhteydenLuonti.SuljeYhteys(yhteys);
         }
     }
 }

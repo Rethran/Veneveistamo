@@ -25,31 +25,31 @@ public class Tuoteluetteloikkuna extends JPanel {
     private JTextField tuotenimi = new JTextField(20);
     private JLabel tuotenimil = new JLabel("Product Name");
     private JTextField tilausnumero = new JTextField(20);
-    private JLabel tilausnumerol = new JLabel("Tilausnumero");
+    private JLabel tilausnumerol = new JLabel("Ordernumber");
     private JTextField venetyyppi = new JTextField(20);
-    private JLabel venetyyppil = new JLabel("Veneen tyyppi");
+    private JLabel venetyyppil = new JLabel("Boat type");
     private JTextField ihmismaara = new JTextField(20);
-    private JLabel ihmismaaral = new JLabel("Ihmismäärä");
+    private JLabel ihmismaaral = new JLabel("#pax");
     private JTextField puulaji = new JTextField(20);
-    private JLabel puulajil = new JLabel("Puulaji");
+    private JLabel puulajil = new JLabel("Woodmaterial");
     private JTextField vari = new JTextField(20);
     private JLabel varil = new JLabel("Color");
     private JTextField masto = new JTextField(20);
-    private JLabel mastol = new JLabel("Mastomahdollisuus");
+    private JLabel mastol = new JLabel("Mast possibility");
     private JTextField lahtohinta = new JTextField(20);
-    private JLabel lahtohintal = new JLabel("Lähtohinta");
+    private JLabel lahtohintal = new JLabel("Starting price");
     private DefaultComboBoxModel tuotepohja = new DefaultComboBoxModel();
     private JComboBox tuotenimicombo = new JComboBox(tuotepohja);
     public JMenu tuotemuokkaamismenu = new JMenu("Menu");
-    private JMenuItem uusi = new JMenuItem("New Product");
-    private JMenuItem hae = new JMenuItem("Find or Upgrade Product");
+    private JMenuItem uusi = new JMenuItem("New");
+    private JMenuItem hae = new JMenuItem("Upgrade");
     private JButton Paivita = new JButton("Update");
     private JButton tuotenappula = new JButton("New Product");
     private JButton sulje = new JButton("Close");
-    private JButton poista = new JButton ("delete");
+    private JButton poista = new JButton ("Delete");
     private JButton etsitiedosto = new JButton("Search files");
     
-    private JTextField tiedostoteksti = new JTextField();
+    private JLabel tiedostoteksti = new JLabel();
     private JMenuBar bar = new JMenuBar();
     private SQLVarasto varasto;
     private File sourceFile;
@@ -59,7 +59,7 @@ public class Tuoteluetteloikkuna extends JPanel {
     this.varasto=varasto;
    
         //tuoteluettelon ikkunaluonti
-        tuotteet.setSize(580, 500);
+        tuotteet.setSize(350, 500);
         tuotteet.setLocation(100, 200);
         tuotteet.setLayout(null);
         
@@ -83,23 +83,23 @@ public class Tuoteluetteloikkuna extends JPanel {
         puulaji.setBounds(180, 170, 100, 20);
         varil.setBounds(40, 190, 100, 20);
         vari.setBounds(180, 190, 100, 20);
-        mastol.setBounds(40, 210, 120, 20);
+        mastol.setBounds(40, 210, 140, 20);
         masto.setBounds(180, 210, 100, 20);
         lahtohintal.setBounds(40, 230, 100, 20);
         lahtohinta.setBounds(180, 230, 100, 20);
         Paivita.setBounds(50, 300, 100, 20);
         
-        sulje.setBounds(150, 300, 100, 20);
-        uusi.setSize(60, 20);
-        tuotenappula.setBounds(50, 300, 100, 20);
+        sulje.setBounds(180, 300, 100, 20);
+        uusi.setSize(20, 20);
+        tuotenappula.setBounds(40, 300, 140, 20);
         poista.setBounds(100,350,100,20);
         tuotenimicombo.setLocation(200, 10);
         tuotenimicombo.setSize(100, 30);
         tuotemuokkaamismenu.setSize(90, 30);
         tuotemuokkaamismenu.setLocation(20, 20);
-        bar.setLocation(20, 10);
-        bar.setSize(105, 20);
-
+        bar.setLocation(40, 10);
+        bar.setSize(100, 20);
+        tiedostoteksti.setVisible(false);
         tuotenappula.setVisible(false);
         poista.setVisible(false);
         tuotenimil.setVisible(false);
@@ -165,14 +165,16 @@ public class Tuoteluetteloikkuna extends JPanel {
      if(status == JFileChooser.APPROVE_OPTION){
          File file = chooser.getSelectedFile();
          if(file == null){
-             return;
-         }
-         String filename = chooser.getSelectedFile().getAbsolutePath();
+             
+             
+         }else{
+         String filename  = chooser.getSelectedFile().getAbsolutePath();
          System.out.println("Kansio: "+filename);
          sourceFile = new File(filename);
          tiedostoteksti.setText(filename);
-         
-     }
+         }
+         }
+     
      
         }
     });
@@ -197,12 +199,17 @@ public class Tuoteluetteloikkuna extends JPanel {
             Tavaralisays paivita= (Tavaralisays)tuotenimicombo.getSelectedItem();
             
             try {
-               
-                tietovarasto.PaivitaTuote(paivita.getLuettelo_id(), new Tavaralisays(lahtohinta.getText(),masto.getText(),puulaji.getText(),ihmismaara.getText(),tuotenimi.getText(),tilausnumero.getText(),vari.getText(),venetyyppi.getText()));
-                tietovarasto.Lisaakuva(sourceFile, paivita.getLuettelo_id());
                 
+                tietovarasto.PaivitaTuote(paivita.getLuettelo_id(), new Tavaralisays(lahtohinta.getText(),masto.getText(),puulaji.getText(),ihmismaara.getText(),tuotenimi.getText(),tilausnumero.getText(),vari.getText(),venetyyppi.getText()));
+               
                 System.out.println(paivita.getLuettelo_id());
-                System.out.println("Upgrade succesfull");
+                System.out.println("Upgrade succesful");
+                
+                  if(sourceFile != null){
+                  tietovarasto.Lisaakuva(sourceFile, paivita.getLuettelo_id());
+                  }
+                  System.out.println("Upgrade succesful");
+                
             } catch (SQLException ex) {
                 System.out.println("upgrade button is broken");
                ex.printStackTrace();
@@ -306,12 +313,18 @@ public class Tuoteluetteloikkuna extends JPanel {
 
                 SQLVarasto tieto = new SQLVarasto();
                 Paaikkuna paaikkuna = new Paaikkuna();
+                
+                
                 try {
                     tieto.Lisaatavara(tuotenappula, new Tavaralisays(lahtohinta.getText(), masto.getText(), puulaji.getText(), ihmismaara.getText(), tuotenimi.getText(), tilausnumero.getText(), vari.getText(), venetyyppi.getText()));
+                   
+                    
                     System.out.println("Inserting product...");
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
+                
+                 
                 System.out.println("Product succesfully inserted to database");
                 tuotteet.setVisible(false);
                 paaikkuna.paaikkuna.setVisible(true);

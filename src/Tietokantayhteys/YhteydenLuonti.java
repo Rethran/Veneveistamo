@@ -36,16 +36,17 @@ public class YhteydenLuonti {
         } catch (Exception ex) {
             System.out.println("error in yhteydenKokeilu " + ex);
         } finally {
-            suljeYhteys(connection);
+            SuljeYhteys(connection);
         }
         return false;
     }
 
-    public static void suljeYhteys(Connection suljettavaYhteys) {
+    public static void SuljeYhteys(Connection suljettavaYhteys) {
         if (suljettavaYhteys != null) {
             try {
                 suljettavaYhteys.close();
             } catch (Exception e) {
+                
 
             }
         }

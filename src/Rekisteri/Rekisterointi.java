@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Rekisteri;
 
 import Kirjautumisikkuna.Kirjautumisikkuna;
@@ -36,11 +32,11 @@ public class Rekisterointi extends JPanel {
     public Rekisterointi() {
 
         //valmistelu
-        rekisterinimi = new JLabel("Username");
+        rekisterinimi = new JLabel("Username:");
         nimiteksti = new JTextField(40);
-        rekisterisalasana = new JLabel("Password");
+        rekisterisalasana = new JLabel("Password:");
         salasanateksti = new JPasswordField(40);
-        sahkopostiosoite = new JLabel("Email");
+        sahkopostiosoite = new JLabel("Email:");
         sahkopostiteksti = new JTextField(40);
         sulje = new JButton("Close");
         valmis = new JButton("Accept");
@@ -49,9 +45,9 @@ public class Rekisterointi extends JPanel {
         kokeilu.setLocation(450, 100);
         kokeilu.setLayout(null);
 
-        YhteydenLuonti y = new YhteydenLuonti();
+       
 
-        //lisäys
+      
         kokeilu.add(rekisterinimi);
         kokeilu.add(nimiteksti);
         kokeilu.add(rekisterisalasana);
@@ -61,7 +57,7 @@ public class Rekisterointi extends JPanel {
         kokeilu.add(sulje);
         kokeilu.add(valmis);
 
-        //asettelu
+       
         rekisterinimi.setBounds(100, 45, 100, 100);
         nimiteksti.setBounds(170, 85, 100, 20);
         rekisterisalasana.setBounds(100, 70, 100, 100);
@@ -71,7 +67,7 @@ public class Rekisterointi extends JPanel {
 
         valmis.setBounds(120, 150, 100, 20);
         sulje.setBounds(220, 150, 100, 20);
-        //framet
+        
 
         kokeilu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         kokeilu.setAlwaysOnTop(true);
@@ -89,19 +85,19 @@ public class Rekisterointi extends JPanel {
                    
                    tieto.lisaaHenkiloita(nimiteksti.getText(), salasanateksti.getText(), sahkopostiteksti.getText());
 
-                    System.out.println("olet luonut käyttäjän");
+                    System.out.println("You Succesfully made an account");
                     
 
                     kokeilu.setVisible(false);
                     k.kirjautumispohja.setVisible(true);
 
-                    //tyhjentää tekstifieldit
+                    
                     nimiteksti.setText(null);
                     salasanateksti.setText(null);
                     sahkopostiteksti.setText(null);
 
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "henkiloitten lisays ei toimi");
+                    JOptionPane.showMessageDialog(null, "Account creation doesn't work out");
                 }
             }
         });
