@@ -21,7 +21,9 @@ public class Tavaralisays {
     private Blob Kuva;
 
     public Blob getKuva() {
+        
         return Kuva;
+        
     }
     private int luettelo_id;
 
@@ -51,13 +53,9 @@ public class Tavaralisays {
 
     
     public int getLuettelo_id(){
-        System.out.println("ootko sinä kiva:"+ luettelo_id);
         return luettelo_id;
     }
-    public void setLuettelo_id(int luettelo_ids){
-        this.luettelo_id = luettelo_ids;
-        
-    }
+    
     public String getLahtohinta() {
         return Lahtohinta;
     }
@@ -111,35 +109,4 @@ public class Tavaralisays {
         return  Tuotenimi;
     }
 
-    public void setLahtohinta(String Lahtohinta) {
-        this.Lahtohinta = Lahtohinta;
-    }
-
-    public void setMastomahdollisuus(String Mastomahdollisuus) {
-        this.Mastomahdollisuus = Mastomahdollisuus;
-    }
-
-    public void setPuulaji(String Puulaji) {
-        this.Puulaji = Puulaji;
-    }
-
-    public void setSoutajapaikkojenmaara(String Soutajapaikkojenmaara) {
-        this.Soutajapaikkojenmaara = Soutajapaikkojenmaara;
-    }
-
-    public void setTuotenimi(String Tuotenimi) {
-        this.Tuotenimi = Tuotenimi;
-    }
-
-    public void setTuotteentilausnumero(String Tuotteentilausnumero) {
-        this.Tuotteentilausnumero = Tuotteentilausnumero;
-    }
-
-    public void setVari(String Vari) {
-        this.Vari = Vari;
-    }
-
-    public void setVenetyyppi(String Venetyyppi) {
-        this.Venetyyppi = Venetyyppi;
-    }
 }

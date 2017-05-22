@@ -12,10 +12,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import Mainwindow.Tuoteluetteloikkuna;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 
@@ -51,10 +48,10 @@ import java.util.logging.Logger;
         exit = new JMenuItem("Exit");
         Tilaus = new JButton("Order");
         apu = new JMenuItem("Help");
-        Veneveistamoyritys = new JButton("Veneveistämö yrityksenä");
+        Veneveistamoyritys = new JButton("Veneveistämö information");
         alihankkijat = new JButton("Alihankkijat");
-        Asiakas = new JButton("Asiakas");
-        Tuoteluettelo = new JButton("Tuoteluettelo");
+        Asiakas = new JButton("Customer");
+        Tuoteluettelo = new JButton("Product catalog");
         
         //**********************************
         //komponenttien tekeminen
